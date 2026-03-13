@@ -1,0 +1,10 @@
+<section class="gridLayer">
+  <div class="grid">
+    @for (cell of cells; track cell.id) {
+      <app-cell [id]="cell.id" [isActive]="cell.isActive" />
+    }
+  </div>
+</section>
+
+
+

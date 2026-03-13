@@ -1,0 +1,117 @@
+.rows-columns-input-section{
+    width: fit-content;
+    height: 30rem;
+    
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    //background-color: purple;
+    transition: ease 0.5s;
+}
+
+.title-and-definition-box{
+    width: 100%;
+    h1{
+        //background-color: red;
+        margin: 0;
+    }
+
+    display: flex;
+    justify-content: flex-start;
+    gap: 0;
+    margin: 0;
+    align-items: center;    
+    flex-direction: column;
+    //background-color: purple;
+}
+
+.input-box{
+    width: fit-content;
+    height: fit-content;
+    border: none;
+    margin-left: .5rem;
+    //background-color: red;
+
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    .real-input{
+        width: 10rem;
+        height: 2rem;
+        border: solid 1px white;
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+        padding-left: 0.5rem;
+        outline: none;
+        background-color: transparent;
+        color: white;
+        font-size: 1rem;
+        -moz-appearance: textfield;
+        
+    }
+}
+
+.rows-columns-input-section {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+  position: absolute;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  position: relative;
+}
+
+.generate-button{
+    width: 10rem;
+    height: 2.5rem;
+    background-color: #0000000e;
+    color: white;
+    border: solid 1px white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 400;
+
+    box-shadow: 0px 4px 4px rgba(255, 255, 255, 0.25);
+
+    transition: background-color 0.3s ease;
+    transition: color 0.4s ease;
+    transition: border-color 0.4s ease;
+
+    &:hover{
+        background-color: #ffffffda;
+        color: black;
+        border-color: #000000da;
+    }
+    
+}
+
+.rows-columns-input-section,
+.grid-section {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  width: 100%;
+}
+
+.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+  position: absolute;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  position: relative;
+}
