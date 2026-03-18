@@ -27,12 +27,14 @@ export class GenerateGrid {
     const total = this.row * this.column;
     this.cells = Array.from({ length: total }, (_, i) => ({
       id: `cell-${i+1}`,
-      isActive: false
+      isActive: false,
+      starterPoint: false
 
     }));
     this.columnUpdate = this.column;    
   }
   
+
   transitionLayer(){
     
   }

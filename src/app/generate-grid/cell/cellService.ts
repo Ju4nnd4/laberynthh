@@ -7,5 +7,8 @@ import { BehaviorSubject } from "rxjs";
 
 export class CellService {
   isStarterPointMarked = new BehaviorSubject<boolean>(false);
+  isGoalPointMarked = new BehaviorSubject<boolean>(false);
+  starterPointCellId = new BehaviorSubject<string|null>(null);
+
   
 }

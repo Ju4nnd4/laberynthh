@@ -18,15 +18,16 @@ export class StarterPointButton{
 
   onClick(){
     if(this.isSubscribed){
-      this.sub.unsubscribe()
+      this.sub.unsubscribe();
       this.isSubscribed = false;      
+      this.cService.isStarterPointMarked.next(false);
 
     }
     else{
       this.sub = this.cService.isStarterPointMarked.subscribe(
         (marked: boolean) => {
           if (marked){
-            console.log("hola")
+            console.log("hola");
           }
         }
       );
