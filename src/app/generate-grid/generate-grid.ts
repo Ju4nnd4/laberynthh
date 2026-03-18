@@ -2,10 +2,11 @@ import { Component, Input, signal, computed, HostBinding, Output, EventEmitter }
 import { Cell } from './cell/cell';
 import { StarterPointButton } from './starter-point-button/starter-point-button';
 import { GoalPointButton } from './goal-point-button/goal-point-button';
+import { FindButton } from './find-button/find-button';
 
 @Component({
   selector: 'app-generate-grid',
-  imports: [Cell, StarterPointButton, GoalPointButton],
+  imports: [Cell, StarterPointButton, GoalPointButton, FindButton],
   templateUrl: './generate-grid.html',
   styleUrl: './generate-grid.scss',
 })
