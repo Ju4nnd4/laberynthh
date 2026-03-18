@@ -1,9 +1,10 @@
 import { Component, Input, signal, computed, HostBinding, Output, EventEmitter } from '@angular/core';
 import { Cell } from './cell/cell';
+import { StarterPointButton } from './starter-point-button/starter-point-button';
 
 @Component({
   selector: 'app-generate-grid',
-  imports: [Cell],
+  imports: [Cell, StarterPointButton],
   templateUrl: './generate-grid.html',
   styleUrl: './generate-grid.scss',
 })

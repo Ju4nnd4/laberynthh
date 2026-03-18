@@ -1,16 +1,11 @@
 import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class CellService {
-  private cells: {id: string, isActive: boolean}[] = [];
-    setCells(cells: {id: string, isActive: boolean}[]) {
-        this.cells = cells;
-    }
-
-    getCells() {
-        return this.cells;
-    }
+  isStarterPointMarked = new BehaviorSubject<boolean>(false);
+  
 }
