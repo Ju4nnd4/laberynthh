@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './goal-point-button.html',
   styleUrl: './goal-point-button.scss',
 })
-export class GoalPointButton {}
+export class GoalPointButton {
+  onClick(){} 
+}
