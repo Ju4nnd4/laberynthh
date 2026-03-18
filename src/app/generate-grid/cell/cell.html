@@ -1,6 +1,7 @@
 <button class="cell"
   [class.active]="isActive" 
-  [class.starterPoint]="isStarterPoint"
+  [class.starterCell]="isStart"
+  [class.goalCell]="isGoal"
   (click)="toggleCell()">
   {{ id }}
 </button>

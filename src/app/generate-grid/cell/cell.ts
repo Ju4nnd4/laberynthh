@@ -12,20 +12,23 @@ export class Cell {
   @Input() id: string = '';
   buttonText: string = this.id.toString();
 
-  isStarterPoint: boolean = false;
+  isStart: boolean = false;
   isGoal: boolean = false;
 
   constructor(private cService: CellService){
 
     this.cService.starterPointCellId.subscribe(id => {
-      this.isStarterPoint = id == this.id
+      this.isStart = id == this.id
+    })
+
+    this.cService.goalPointCellId.subscribe(id => {
+      this.isGoal = id == this.id
     })
   }
 
-  starterActive = false;
-
   toggleCell(){
     this.setStarterPointOnACell();
+    this.setGoalPointOnACell();
   }
 
   setStarterPointOnACell(){
@@ -35,7 +38,18 @@ export class Cell {
     if (this.cService.isStarterPointMarked.getValue()) {
     // Desactiva la celda anterior
     this.cService.starterPointCellId.next(this.id);
-    this.isStarterPoint = true;
+    this.isStart = true;
+    }
+  }
+
+  setGoalPointOnACell(){
+
+    this.cService.goalPointCellId.subscribe();
+    
+    if (this.cService.isGoalPointMarked.getValue()) {
+    // Desactiva la celda anterior
+    this.cService.goalPointCellId.next(this.id);
+    this.isGoal = true;
     }
   }
 
