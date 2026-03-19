@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ExpansionService } from '../cell/expansionService';
+import { StorizedData } from '../storizedData';
 
 @Component({
   selector: 'app-find-button',
@@ -7,7 +9,12 @@ import { Component } from '@angular/core';
   styleUrl: './find-button.scss',
 })
 export class FindButton {
+
+  constructor(private eService: ExpansionService){}
+
+  data = inject(StorizedData);
+
   onClick(){
-    
+    this.eService.djisktraFind(this.data.starterCellId);
   }
 }

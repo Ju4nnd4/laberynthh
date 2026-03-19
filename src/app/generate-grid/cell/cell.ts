@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject} from '@angular/core';
 import { CellService } from './cellService';
+import { StorizedData } from '../storizedData';
 
 @Component({
   selector: 'app-cell',
@@ -11,9 +12,9 @@ export class Cell {
   @Input() isActive: boolean = false;
   @Input() id: string = '';
   buttonText: string = this.id.toString();
-
   isStart: boolean = false;
   isGoal: boolean = false;
+  data = inject(StorizedData);
 
   constructor(private cService: CellService){
 
@@ -36,8 +37,9 @@ export class Cell {
     this.cService.starterPointCellId.subscribe();
     
     if (this.cService.isStarterPointMarked.getValue()) {
-    // Desactiva la celda anterior
+
     this.cService.starterPointCellId.next(this.id);
+    this.data.setStarterCell(this.id);
     this.isStart = true;
     }
   }
@@ -49,6 +51,7 @@ export class Cell {
     if (this.cService.isGoalPointMarked.getValue()) {
     // Desactiva la celda anterior
     this.cService.goalPointCellId.next(this.id);
+    this.data.setGoalCell(this.id)
     this.isGoal = true;
     }
   }
