@@ -3,6 +3,8 @@ import { inject, Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { Inject } from "@angular/core";
 import { StorizedData } from "../storizedData";
+import { GridExpansionLimitationService } from "./gridExpansionLimitationService";
+import { StarterPointButton } from "../starter-point-button/starter-point-button";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ import { StorizedData } from "../storizedData";
 export class ExpansionService{
   
   data = inject(StorizedData);
-
+  rService = inject(GridExpansionLimitationService);
   starterCell!: number;
   cellAbove!: number;
   cellBelow!: number;
@@ -20,11 +22,11 @@ export class ExpansionService{
   //goalCellNumber: number = parseInt(this.goalCellId.replace("cell-", ""), 10);
   setVariablesForDjisktra(starterCellId: string): void{
     
-    let starterPoint = parseInt(starterCellId.replace("cell-", ""), 10);
-    this.cellAbove = starterPoint - this.data.getColumnsQnty();
-    this.cellBelow = starterPoint + this.data.getColumnsQnty();
-    this.cellRight = starterPoint + 1;
-    this.cellLeft = starterPoint - 1;
+    this.starterCell = parseInt(starterCellId.replace("cell-", ""), 10);
+    this.cellAbove = this.starterCell - this.data.getColumnsQnty();
+    this.cellBelow = this.starterCell + this.data.getColumnsQnty();
+    this.cellRight = this.starterCell + 1;
+    this.cellLeft = this.starterCell - 1;
     
   }
 
@@ -33,36 +35,7 @@ export class ExpansionService{
     this.djisktraExpansion();
   }
 
-  doCellExist(cell: number): boolean{
-    if(cell<1 || cell > this.data.getColumnsQnty()*this.data.getRowsQnty()){
-      return false;
-    } else {
-      return true;
-    }
-
-  }
-
   djisktraExpansion(){
-
-    if(this.doCellExist(this.starterCell)){
-
-      if(this.doCellExist(this.cellAbove)){
-        console.log("Expandiendo hacia arriba " + this.cellAbove);
-      }
-
-      if(this.doCellExist(this.cellRight)){
-        console.log("Expandiendo hacia derecha " + this.cellRight);
-      }
-
-      if(this.doCellExist(this.cellBelow)){
-        console.log("Expandiendo hacia abajo " + this.cellBelow);
-      }
-
-      if(this.doCellExist(this.cellLeft)){
-        console.log("Expandiendo hacia izquierda " + this.cellLeft);
-      }
-    }
-
+    
   }
-
 }
