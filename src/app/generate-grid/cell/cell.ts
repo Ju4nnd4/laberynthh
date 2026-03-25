@@ -30,6 +30,7 @@ export class Cell {
   toggleCell(){
     this.setStarterPointOnACell();
     this.setGoalPointOnACell();
+    
   }
 
   setStarterPointOnACell(){
@@ -55,6 +56,7 @@ export class Cell {
     this.isGoal = true;
     }
   }
+
 
 }
 

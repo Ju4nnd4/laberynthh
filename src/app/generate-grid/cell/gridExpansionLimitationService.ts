@@ -1,17 +1,19 @@
 import { Injectable, inject } from "@angular/core";
 import { StorizedData } from "../storizedData";
 
+@Injectable({
+  providedIn: 'root'
+})
+
+
 export class GridExpansionLimitationService{
 
     cell!: number;
     data = inject(StorizedData);
     column = this.data.getColumnsQnty();
-
-    setCell(cell: number): void{
-        this.cell = cell;
-    }
     
-    checkExpansion(): boolean{
+    isPossibleToExpandToThisCell(targetCell: number): boolean{
+        targetCell = this.cell
         if(this.checkUpMax() && this.checkRightMax() && this.checkDownMax() && this.checkLeftMax()){
             return true;
         }

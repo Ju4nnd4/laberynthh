@@ -10,11 +10,11 @@ import { StorizedData } from '../storizedData';
 })
 export class FindButton {
 
-  constructor(private eService: ExpansionService){}
+  constructor(private expansionService: ExpansionService){}
 
   data = inject(StorizedData);
 
   onClick(){
-    this.eService.djisktraFind(this.data.starterCellId);
+    this.expansionService.djisktraFind(this.data.starterCellId);
   }
 }
