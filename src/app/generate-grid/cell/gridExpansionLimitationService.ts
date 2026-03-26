@@ -12,41 +12,34 @@ export class GridExpansionLimitationService{
     data = inject(StorizedData);
     column = this.data.getColumnsQnty();
     
-    isPossibleToExpandToThisCell(targetCell: number): boolean{
-        targetCell = this.cell
-        if(this.checkUpMax() && this.checkRightMax() && this.checkDownMax() && this.checkLeftMax()){
-            return true;
-        }
-        return false;
-    }
 
-    checkUpMax(): boolean{
-        if(this.cell<1){
+    isPossibleToGoAbove(node: number): boolean{
+        if(node<1){
             return false;
         }
         return true;
     }
 
-    checkDownMax(): boolean{
-        if(this.cell> this.data.getColumnsQnty()* this.data.getRowsQnty()){
+    isPossibleToGoDown(node: number): boolean{
+        if(node > this.data.getColumnsQnty()* this.data.getRowsQnty()){
             return false;
         }
         return true;
     }
 
-    checkLeftMax(): boolean{
-        if((this.cell % this.data.getColumnsQnty()) - 1 == - 1){
+    isPossibleToGoLeft(node: number): boolean{
+        if((node % this.data.getColumnsQnty()) - 1 == -1){
             return false;
         }
         return true;
     }
     
-    checkRightMax(): boolean{
-        if((this.cell % this.data.getColumnsQnty()) + 1 == 1){
+    isPossibleToGoRight(node: number): boolean{
+        if((node % this.data.getColumnsQnty()) + 1 == 1){
+            console.log(this.cell);
             return false;
         }
         return true;
-
     }
     
 }

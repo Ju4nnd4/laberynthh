@@ -12,6 +12,8 @@ export class ExpansionService{
   
   data = inject(StorizedData);
   rService = inject(GridExpansionLimitationService);
+  visited = new Set<number>();
+
   starterCell!: number;
   cellAbove!: number;
   cellBelow!: number;
@@ -29,6 +31,7 @@ export class ExpansionService{
   }
   
   djisktraFind(starterCellId: string): void{
+    this.visited.clear();
     const starterCell = parseInt(starterCellId.replace("cell-", ""), 10);
     this.djisktraExpansion(starterCell);
   }
@@ -36,62 +39,35 @@ export class ExpansionService{
   expandCell(targetCell: number){
     const cell = document.getElementById("cell-" + targetCell);
     cell!.classList.add("walked");
-    console.log(cell);
+    let isNeighbor = new BehaviorSubject<boolean>(true);
+
+
   }
 
   async djisktraExpansion(targetCell: number){
+
+    if (!targetCell || this.visited.has(targetCell)) return;
+    this.visited.add(targetCell);
+
+    await this.sleep(100);
     
     this.setVariablesForDjisktra(targetCell);
     
-    let isStarterCellAvailable: boolean = this.rService.isPossibleToExpandToThisCell(this.starterCell);
-    let isCellAboveAvailable: boolean = this.rService.isPossibleToExpandToThisCell(this.cellAbove);
-    let isCellBelowAvailable: boolean = this.rService.isPossibleToExpandToThisCell(this.cellBelow);
-    let isCellLeftAvailable = this.rService.isPossibleToExpandToThisCell(this.cellLeft);
-    let isCellRightAvailable = this.rService.isPossibleToExpandToThisCell(this.cellRight);
-    await this.sleep(100);
+    let isCellAboveAvailable: boolean = this.rService.isPossibleToGoAbove(this.cellAbove);
+    let isCellBelowAvailable: boolean = this.rService.isPossibleToGoDown(this.cellBelow);
+    // FIX ME: isPossibleToGoRight the only way it works is taking evaluating
+    let isCellRightAvailable: boolean = this.rService.isPossibleToGoRight(targetCell);
+    let isCellLeftAvailable: boolean = this.rService.isPossibleToGoLeft(this.cellLeft);
     
-    if(isStarterCellAvailable){
-      this.expandCell(this.starterCell)
-    }
-    if(isCellAboveAvailable){
-      this.expandCell(this.cellAbove)
-    }
-    if(isCellLeftAvailable){
-      this.expandCell(this.cellLeft)
-    }
-    if(isCellBelowAvailable){
-      this.expandCell(this.cellBelow)
-    }
-    if(isCellRightAvailable){
-      this.expandCell(this.cellRight)
-    }
-    
-    while(isStarterCellAvailable || isCellAboveAvailable || isCellRightAvailable || isCellBelowAvailable || isCellLeftAvailable){
-      
-      if(isStarterCellAvailable){
-        this.djisktraExpansion(this.starterCell)
-        isStarterCellAvailable = false;
+    if (isCellAboveAvailable)   this.expandCell(this.cellAbove);
+    if (isCellBelowAvailable)   this.expandCell(this.cellBelow);
+    if (isCellRightAvailable)   this.expandCell(this.cellRight);
+    if (isCellLeftAvailable)    this.expandCell(this.cellLeft);
 
-      }
-      if(isCellAboveAvailable){
-        this.djisktraExpansion(this.cellAbove)
-        isCellAboveAvailable = false;
-      }
-      if(isCellLeftAvailable){
-        this.djisktraExpansion(this.cellLeft)
-        isCellLeftAvailable = false;
-      }
-      if(isCellBelowAvailable){
-        this.djisktraExpansion(this.cellBelow)
-        isCellBelowAvailable = false;
-      }
-      if(isCellRightAvailable){
-        this.djisktraExpansion(this.cellRight)
-        isCellRightAvailable = false;
-      }
-    }
-
-
+    if (isCellAboveAvailable)   this.djisktraExpansion(this.cellAbove);
+    if (isCellBelowAvailable)   this.djisktraExpansion(this.cellBelow);
+    if (isCellRightAvailable)   this.djisktraExpansion(this.cellRight);
+    if (isCellLeftAvailable)    this.djisktraExpansion(this.cellLeft);
   }
 
   sleep(ms: number){
