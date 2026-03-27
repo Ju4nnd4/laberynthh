@@ -39,55 +39,49 @@ export class ExpansionService{
     this.djisktraExpansion(starterCell);
   }
   
-  expandCell(targetCell: number):any{
-    const id: string = "cell-" + targetCell;
-    console.log(id);
-    const instance = this.registerInstance.get(id);
-    if(instance!.isGoal){
-      return this.stop = true;
-    } 
-    instance!.toNeighbor();
+  isGoalCell(targetCell: number): void {
+  const id = "cell-" + targetCell;
+  const instance = this.registerInstance.get(id);
+  if (instance!.isGoal) {
+    this.stop = true; // 👈 flag global, todas las ramas lo ven
+  }
   }
 
-  didWeFindGoal(){
-    if(this.stop){
-      return;
-    }
+  expandCell(targetCell: number): void {
+    const id = "cell-" + targetCell;
+    const instance = this.registerInstance.get(id);
+    this.isGoalCell(targetCell); 
+    if (this.stop) return;       
+    instance!.toNeighbor();
   }
 
   async djisktraExpansion(targetCell: number){
 
-    if (!targetCell || this.visited.has(targetCell) || this.stop) return;
-    this.visited.add(targetCell);
+      if (!targetCell || this.visited.has(targetCell) || this.stop) return;
 
-    await this.sleep(400);
-    
-    this.setVariablesForDjisktra(targetCell);
-    
-    let isCellAboveAvailable: boolean = this.rService.isPossibleToGoAbove(this.cellAbove);
-    let isCellBelowAvailable: boolean = this.rService.isPossibleToGoDown(this.cellBelow);
-    // FIX ME: isPossibleToGoRight the only way it works is taking evaluating
-    let isCellRightAvailable: boolean = this.rService.isPossibleToGoRight(targetCell);
-    let isCellLeftAvailable: boolean = this.rService.isPossibleToGoLeft(this.cellLeft);
-    
-    this.didWeFindGoal()
-    if (isCellAboveAvailable)   this.expandCell(this.cellAbove);
-    this.didWeFindGoal()
-    if (isCellBelowAvailable)   this.expandCell(this.cellBelow);
-    this.didWeFindGoal()
-    if (isCellRightAvailable)   this.expandCell(this.cellRight);
-    this.didWeFindGoal()
-    if (isCellLeftAvailable)    this.expandCell(this.cellLeft);
-    this.didWeFindGoal()
-    
-    if (isCellAboveAvailable)   this.djisktraExpansion(this.cellAbove);
-    this.didWeFindGoal()
-    if (isCellBelowAvailable)   this.djisktraExpansion(this.cellBelow);
-    this.didWeFindGoal()
-    if (isCellRightAvailable)   this.djisktraExpansion(this.cellRight);
-    this.didWeFindGoal()
-    if (isCellLeftAvailable)    this.djisktraExpansion(this.cellLeft);
-    this.didWeFindGoal()
+      this.visited.add(targetCell);
+      await this.sleep(400);
+      this.setVariablesForDjisktra(targetCell);
+
+      const isCellAboveAvailable = this.rService.isPossibleToGoAbove(this.cellAbove);
+      const isCellBelowAvailable = this.rService.isPossibleToGoDown(this.cellBelow);
+      const isCellRightAvailable = this.rService.isPossibleToGoRight(targetCell);
+      const isCellLeftAvailable  = this.rService.isPossibleToGoLeft(this.cellLeft);
+
+      if (isCellAboveAvailable) this.expandCell(this.cellAbove);
+      if (isCellBelowAvailable) this.expandCell(this.cellBelow);
+      if (isCellRightAvailable) this.expandCell(this.cellRight);
+      if (isCellLeftAvailable)  this.expandCell(this.cellLeft);
+
+      if (this.stop) return;
+
+      await Promise.all([
+        isCellAboveAvailable ? this.djisktraExpansion(this.cellAbove) : Promise.resolve(),
+        isCellBelowAvailable ? this.djisktraExpansion(this.cellBelow) : Promise.resolve(),
+        isCellRightAvailable ? this.djisktraExpansion(this.cellRight) : Promise.resolve(),
+        isCellLeftAvailable  ? this.djisktraExpansion(this.cellLeft)  : Promise.resolve(),
+      ]);
+
   }
 
   sleep(ms: number){
