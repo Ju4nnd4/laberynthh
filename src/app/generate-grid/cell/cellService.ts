@@ -10,6 +10,8 @@ export class CellService {
   isGoalPointMarked = new BehaviorSubject<boolean>(false);
   starterPointCellId = new BehaviorSubject<string|null>(null);
   goalPointCellId = new BehaviorSubject<string|null>(null);
+  isNeighbor = new BehaviorSubject<boolean>(false);
+  
 
 
 }

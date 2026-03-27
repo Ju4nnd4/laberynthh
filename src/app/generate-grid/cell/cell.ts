@@ -1,6 +1,7 @@
-import { Component, Input, inject} from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
 import { CellService } from './cellService';
 import { StorizedData } from '../storizedData';
+import { cellRegisterService } from './cellRegisterService';
 
 @Component({
   selector: 'app-cell',
@@ -8,15 +9,16 @@ import { StorizedData } from '../storizedData';
   templateUrl: './cell.html',
   styleUrl: './cell.scss',
 })
-export class Cell {
+export class Cell implements OnInit, OnDestroy {
   @Input() isActive: boolean = false;
   @Input() id: string = '';
   buttonText: string = this.id.toString();
   isStart: boolean = false;
   isGoal: boolean = false;
+  isNeighbor: boolean = false;
   data = inject(StorizedData);
 
-  constructor(private cService: CellService){
+  constructor(private cService: CellService, private registerInstance: cellRegisterService){
 
     this.cService.starterPointCellId.subscribe(id => {
       this.isStart = id == this.id
@@ -25,12 +27,28 @@ export class Cell {
     this.cService.goalPointCellId.subscribe(id => {
       this.isGoal = id == this.id
     })
+
   }
+
+  ngOnInit() {
+    this.registerInstance.register(this.id, this);
+  }
+
+  ngOnDestroy() {
+    this.registerInstance.delete(this.id);  // organizar este menjurje
+  }
+
 
   toggleCell(){
     this.setStarterPointOnACell();
     this.setGoalPointOnACell();
     
+  }
+
+  toNeighbor(){
+    this.isNeighbor = true;
+    const cell = document.getElementById(this.id)
+    cell!.classList.add("walked");
   }
 
   setStarterPointOnACell(){
