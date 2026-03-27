@@ -43,7 +43,7 @@ export class ExpansionService{
   const id = "cell-" + targetCell;
   const instance = this.registerInstance.get(id);
   if (instance!.isGoal) {
-    this.stop = true; // 👈 flag global, todas las ramas lo ven
+    this.stop = true;
   }
   }
 
