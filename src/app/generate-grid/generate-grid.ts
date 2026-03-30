@@ -4,10 +4,11 @@ import { StarterPointButton } from './starter-point-button/starter-point-button'
 import { GoalPointButton } from './goal-point-button/goal-point-button';
 import { FindButton } from './find-button/find-button';
 import { StorizedData } from './storizedData';
+import { ObstacleButton } from './obstacle-button/obstacle-button';
 
 @Component({
   selector: 'app-generate-grid',
-  imports: [Cell, StarterPointButton, GoalPointButton, FindButton],
+  imports: [Cell, StarterPointButton, GoalPointButton, FindButton, ObstacleButton],
   templateUrl: './generate-grid.html',
   styleUrl: './generate-grid.scss',
 })

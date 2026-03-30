@@ -91,6 +91,11 @@ export class ExpansionService{
     return instance!.isStart;
   }
 
+  isBlock(cellNumber: number){
+    const instance = this.registerInstance.get("cell-" + cellNumber)
+    return instance!.isBlock;
+  }
+
   
 
   async djisktraExpansion(targetCell: number){
@@ -101,10 +106,10 @@ export class ExpansionService{
       await this.sleep(400);
       this.setVariablesForDjisktra(targetCell);
 
-      const isCellAboveAvailable = this.rService.isPossibleToGoAbove(this.cellAbove) && !this.isAlreadyVisited(this.cellAbove) && !this.isStart(this.cellAbove) && !this.stop;
-      const isCellBelowAvailable = this.rService.isPossibleToGoDown(this.cellBelow) && !this.isAlreadyVisited(this.cellBelow) && !this.isStart(this.cellBelow) && !this.stop;
-      const isCellRightAvailable = this.rService.isPossibleToGoRight(targetCell) && !this.isAlreadyVisited(this.cellRight) && !this.isStart(this.cellRight) && !this.stop;
-      const isCellLeftAvailable  = this.rService.isPossibleToGoLeft(this.cellLeft) && !this.isAlreadyVisited(this.cellLeft) && !this.isStart(this.cellLeft) && !this.stop;
+      const isCellAboveAvailable = this.rService.isPossibleToGoAbove(this.cellAbove) && !this.isAlreadyVisited(this.cellAbove) && !this.isStart(this.cellAbove) && !this.isBlock(this.cellAbove);
+      const isCellBelowAvailable = this.rService.isPossibleToGoDown(this.cellBelow) && !this.isAlreadyVisited(this.cellBelow) && !this.isStart(this.cellBelow) && !this.isBlock(this.cellBelow);
+      const isCellRightAvailable = this.rService.isPossibleToGoRight(targetCell) && !this.isAlreadyVisited(this.cellRight) && !this.isStart(this.cellRight) && !this.isBlock(this.cellRight);
+      const isCellLeftAvailable  = this.rService.isPossibleToGoLeft(this.cellLeft) && !this.isAlreadyVisited(this.cellLeft) && !this.isStart(this.cellLeft) && !this.isBlock(this.cellLeft);
         
       if (isCellAboveAvailable){
         

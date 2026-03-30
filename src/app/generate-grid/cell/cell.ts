@@ -17,6 +17,7 @@ export class Cell implements OnInit, OnDestroy {
   isGoal: boolean = false;
   isNeighbor: boolean = false;
   isPath: boolean = false;
+  isBlock: boolean = false;
   data = inject(StorizedData);
 
   constructor(private cService: CellService, private registerInstance: cellRegisterService){
@@ -43,7 +44,7 @@ export class Cell implements OnInit, OnDestroy {
   toggleCell(){
     this.setStarterPointOnACell();
     this.setGoalPointOnACell();
-    
+    this.setBlockPointOnACell();
   }
 
   toNeighbor(){
@@ -55,11 +56,27 @@ export class Cell implements OnInit, OnDestroy {
       cell!.classList.remove("walked");
     }
   }
+  
+  toBlock(){
+    this.isBlock = !this.isBlock;
+    const cell = document.getElementById(this.id)
+    if(this.isBlock){
+      cell!.classList.add("obstacle");
+    } else {
+      cell!.classList.remove("obstacle");
+    }
+  }
 
   toPath(){
     this.isPath = true;
     const cell = document.getElementById(this.id)
     cell!.classList.add("tracePath");
+  }
+
+  setBlockPointOnACell(){
+    if(this.cService.isBlockButtonMarked.getValue()){
+      this.toBlock();
+    }
   }
 
 
