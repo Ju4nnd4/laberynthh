@@ -16,6 +16,7 @@ export class Cell implements OnInit, OnDestroy {
   isStart: boolean = false;
   isGoal: boolean = false;
   isNeighbor: boolean = false;
+  isPath: boolean = false;
   data = inject(StorizedData);
 
   constructor(private cService: CellService, private registerInstance: cellRegisterService){
@@ -49,6 +50,12 @@ export class Cell implements OnInit, OnDestroy {
     this.isNeighbor = true;
     const cell = document.getElementById(this.id)
     cell!.classList.add("walked");
+  }
+
+  toPath(){
+    this.isPath = true;
+    const cell = document.getElementById(this.id)
+    cell!.classList.add("tracePath");
   }
 
   setStarterPointOnACell(){

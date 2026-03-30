@@ -36,7 +36,6 @@ export class GridExpansionLimitationService{
     
     isPossibleToGoRight(node: number): boolean{
         if((node % this.data.getColumnsQnty()) + 1 == 1){
-            console.log(this.cell);
             return false;
         }
         return true;
