@@ -22,8 +22,10 @@ export class ExpansionService{
   cellRight!: number;
   cellLeft!: number;
   stop!: boolean;
-  path: Record<number, number> =  {}
   goalCell!: number;
+  parentMap: Record<number, number> = {};
+
+  controller = new AbortController();
   //goalCellNumber: number = parseInt(this.goalCellId.replace("cell-", ""), 10);
   setVariablesForDjisktra(starterCell: number): void{
     
@@ -40,7 +42,6 @@ export class ExpansionService{
     const starterCell = parseInt(starterCellId.replace("cell-", ""), 10);
     this.djisktraExpansion(starterCell);
     console.log("Esta es la meta: " + this.goalCell);
-    this.reconstructPath(this.goalCell);
   }
   
   isGoalCell(targetCell: number): void {
@@ -54,28 +55,43 @@ export class ExpansionService{
   }
 
   expandCell(targetCell: number): void {
+    if (this.stop) return; 
     const id = "cell-" + targetCell;
     const instance = this.registerInstance.get(id);
     this.isGoalCell(targetCell); 
-    if (instance!.isStart) return;
-    if (this.stop) return; 
+    // if (instance!.isStart) return;
+    // if (instance!.isNeighbor) return;
     instance!.toNeighbor();
   }
 
-  reconstructPath(goalCell: number): number[] {
-    const pathFinded = [];
-    let current = goalCell;
-    while (current !== undefined) {
-      let instance = this.registerInstance.get("cell-" + current)
-      instance!.toPath();
-      pathFinded.unshift(current);
-      current = this.path[current];
-      console.log(pathFinded);
-
-    }
-    return pathFinded; // [start, ..., goal]
+  async reconstructPath(goalCell: number) {
+  const path = [];
+  let current = goalCell;
+  while (current !== undefined) {
+    console.log("pintando celda:", current);
+    await this.sleep(100);
+    let instance = this.registerInstance.get("cell-" + current);
+    instance!.toPath();
+    path.unshift(current);
+    current = this.parentMap[current];
   }
 
+  console.log("camino completo:", path);
+  return path;
+  }
+
+  isAlreadyVisited(cellNumber: number){
+    const instance = this.registerInstance.get("cell-" + cellNumber)
+    return instance!.isNeighbor;
+  }
+  
+
+  isStart(cellNumber: number){
+    const instance = this.registerInstance.get("cell-" + cellNumber)
+    return instance!.isStart;
+  }
+
+  
 
   async djisktraExpansion(targetCell: number){
 
@@ -85,31 +101,34 @@ export class ExpansionService{
       await this.sleep(400);
       this.setVariablesForDjisktra(targetCell);
 
-      const isCellAboveAvailable = this.rService.isPossibleToGoAbove(this.cellAbove);
-      const isCellBelowAvailable = this.rService.isPossibleToGoDown(this.cellBelow);
-      const isCellRightAvailable = this.rService.isPossibleToGoRight(targetCell);
-      const isCellLeftAvailable  = this.rService.isPossibleToGoLeft(this.cellLeft);
-
-      if (isCellAboveAvailable && !(this.cellAbove in this.path)) this.path[this.cellAbove] = targetCell;
-      if (isCellBelowAvailable && !(this.cellBelow in this.path)) this.path[this.cellBelow] = targetCell;
-      if (isCellRightAvailable && !(this.cellRight in this.path)) this.path[this.cellRight] = targetCell;
-      if (isCellLeftAvailable  && !(this.cellLeft  in this.path)) this.path[this.cellLeft]  = targetCell;
-
+      const isCellAboveAvailable = this.rService.isPossibleToGoAbove(this.cellAbove) && !this.isAlreadyVisited(this.cellAbove) && !this.isStart(this.cellAbove) && !this.stop;
+      const isCellBelowAvailable = this.rService.isPossibleToGoDown(this.cellBelow) && !this.isAlreadyVisited(this.cellBelow) && !this.isStart(this.cellBelow) && !this.stop;
+      const isCellRightAvailable = this.rService.isPossibleToGoRight(targetCell) && !this.isAlreadyVisited(this.cellRight) && !this.isStart(this.cellRight) && !this.stop;
+      const isCellLeftAvailable  = this.rService.isPossibleToGoLeft(this.cellLeft) && !this.isAlreadyVisited(this.cellLeft) && !this.isStart(this.cellLeft) && !this.stop;
         
+      if (isCellAboveAvailable){
         
-      
-        console.log(this.path);
-
+        this.parentMap[this.cellAbove] = targetCell
+        this.expandCell(this.cellAbove);
+      } 
         
-        if (isCellAboveAvailable) this.expandCell(this.cellAbove);
-        if (isCellBelowAvailable) this.expandCell(this.cellBelow);
-        if (isCellRightAvailable) this.expandCell(this.cellRight);
-        if (isCellLeftAvailable)  this.expandCell(this.cellLeft);
+      if (isCellBelowAvailable){
+        this.parentMap[this.cellBelow] = targetCell
+        this.expandCell(this.cellBelow);
+      }
+      if (isCellRightAvailable) {
+        this.parentMap[this.cellRight] = targetCell
+        this.expandCell(this.cellRight);
+      }
+      if (isCellLeftAvailable){
+        this.parentMap[this.cellLeft] = targetCell
+        this.expandCell(this.cellLeft);
+      }
         
-        if (this.stop) return;
+      if (this.stop) return;
         
-        await Promise.all([
-          isCellAboveAvailable ? this.djisktraExpansion(this.cellAbove) : Promise.resolve(),
+      await Promise.all([
+        isCellAboveAvailable ? this.djisktraExpansion(this.cellAbove) : Promise.resolve(),
         isCellBelowAvailable ? this.djisktraExpansion(this.cellBelow) : Promise.resolve(),
         isCellRightAvailable ? this.djisktraExpansion(this.cellRight) : Promise.resolve(),
         isCellLeftAvailable  ? this.djisktraExpansion(this.cellLeft)  : Promise.resolve(),

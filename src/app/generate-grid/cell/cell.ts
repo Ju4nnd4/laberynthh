@@ -47,9 +47,13 @@ export class Cell implements OnInit, OnDestroy {
   }
 
   toNeighbor(){
-    this.isNeighbor = true;
+    this.isNeighbor = !this.isNeighbor;
     const cell = document.getElementById(this.id)
-    cell!.classList.add("walked");
+    if(this.isNeighbor){
+      cell!.classList.add("walked");
+    } else {
+      cell!.classList.remove("walked");
+    }
   }
 
   toPath(){
@@ -57,6 +61,8 @@ export class Cell implements OnInit, OnDestroy {
     const cell = document.getElementById(this.id)
     cell!.classList.add("tracePath");
   }
+
+
 
   setStarterPointOnACell(){
 
