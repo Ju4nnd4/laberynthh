@@ -1,9 +1,6 @@
 <section 
   class="rows-columns-input-section" 
-  #inputSection id="inputSection"
-  [class.visible]="!showGrid"
-  [class.hidden]="showGrid">
-      
+  #inputSection id="inputSection">    
     <span class="title-and-definition-box">
       <h1>Hello, welcome to my labyrinthh</h1>
       <p>Enter the number of rows and columns to generate a labyrinth.</p>
@@ -30,17 +27,6 @@
         class="real-input">
       </span>
 
-      <button (click)="onGenerate()" class="generate-button">Generate Grid</button>
-
+      <app-generate-grid-button [column]="column" [row]="row"></app-generate-grid-button>
       
-    </section>
-    
-    <section class="grid-section"
-      [class.visible]="showGrid"
-      [class.hidden]="!showGrid">
-
-      <button (click)="showGrid = false" class="back-button">← Volver</button>
-      <app-generate-grid [shouldGenerate]="showGrid">
-      </app-generate-grid>
-
     </section>
