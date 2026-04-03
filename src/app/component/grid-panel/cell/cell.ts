@@ -28,10 +28,12 @@ export class Cell implements OnInit, OnDestroy {
     this.registerInstance.register(this.id, this);
     
     this.cellState.starterCellOnChangeSubscription.subscribe(id => {
-      this.isStart = id == this.id
+      this.isStart = id == this.id;
+      this.detectChanges.detectChanges();
     })
     this.cellState.goalCellOnChangeSubscription.subscribe(id => {
-      this.isGoal = id == this.id
+      this.isGoal = id == this.id;
+      this.detectChanges.detectChanges();
     })
     
   }
@@ -44,11 +46,7 @@ export class Cell implements OnInit, OnDestroy {
   
   toBlock(){ this.isBlock = !this.isBlock; this.detectChanges.detectChanges();}
 
-  toPath(){ this.isPath = !this.isPath; this.detectChanges.detectChanges(); }
-
-  toStart(){ this.detectChanges.detectChanges(); }
-
-  toGoal(){ this.detectChanges.detectChanges(); }
+  toTracePath(){ this.isPath = !this.isPath; this.detectChanges.detectChanges(); }
 
 }
 

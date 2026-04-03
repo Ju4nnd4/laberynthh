@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { BFSSearch } from '../../../service/search/BFS/expansionService';
+import { BfsMethod } from '../../../service/search/BFS/BFSMethod';
 import { DataStore } from '../../../service/dataStore';
 
 @Component({
@@ -10,11 +10,11 @@ import { DataStore } from '../../../service/dataStore';
 })
 export class FindButton {
 
-  constructor(private BFSSearch: BFSSearch){}
+  constructor(private BfsMethod: BfsMethod){}
 
   data = inject(DataStore);
 
   onClick(){
-    this.BFSSearch.djisktraFind(this.data.starterCellId);
+    this.BfsMethod.search(this.data.starterCellId);
   }
 }
