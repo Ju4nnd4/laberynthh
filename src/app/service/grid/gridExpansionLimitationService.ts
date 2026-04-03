@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { StorizedData } from "../dataStore";
+import { DataStore } from "../dataStore";
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import { StorizedData } from "../dataStore";
 export class GridExpansionLimitationService{
 
     cell!: number;
-    data = inject(StorizedData);
+    data = inject(DataStore);
     column = this.data.getColumnsQnty();
     
 

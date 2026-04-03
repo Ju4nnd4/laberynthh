@@ -1,5 +1,5 @@
 import { Component, inject, Input} from '@angular/core';
-import { StorizedData } from '../../../../service/dataStore';
+import { DataStore } from '../../../../service/dataStore';
 import { GridEventService } from '../../../../service/grid/gridEventService';
 
 @Component({
@@ -13,7 +13,7 @@ export class GenerateGridButton {
   @Input() row: number = 0;
   @Input() column: number = 0;
 
-  data = inject(StorizedData);
+  data = inject(DataStore);
   gridEvent = inject(GridEventService);
 
   onGenerate() {

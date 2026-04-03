@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { ExpansionService } from '../../../service/search/BFS/expansionService';
-import { StorizedData } from '../../../service/dataStore';
+import { BFSSearch } from '../../../service/search/BFS/expansionService';
+import { DataStore } from '../../../service/dataStore';
 
 @Component({
   selector: 'app-find-button',
@@ -10,11 +10,11 @@ import { StorizedData } from '../../../service/dataStore';
 })
 export class FindButton {
 
-  constructor(private expansionService: ExpansionService){}
+  constructor(private BFSSearch: BFSSearch){}
 
-  data = inject(StorizedData);
+  data = inject(DataStore);
 
   onClick(){
-    this.expansionService.djisktraFind(this.data.starterCellId);
+    this.BFSSearch.djisktraFind(this.data.starterCellId);
   }
 }

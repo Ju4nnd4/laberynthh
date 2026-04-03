@@ -1,6 +1,6 @@
 import { Component, HostBinding, inject, effect} from '@angular/core';
 import { Cell } from '../cell/cell';
-import { StorizedData } from '../../../service/dataStore';
+import { DataStore } from '../../../service/dataStore';
 import { GridEventService } from '../../../service/grid/gridEventService';
 import { CellModel } from '../../../model/cellModel';
 
@@ -12,7 +12,7 @@ import { CellModel } from '../../../model/cellModel';
   styleUrl: './generate-grid.scss',
 })
 export class GenerateGrid{
-  data = inject(StorizedData);
+  data = inject(DataStore);
   gridEvent = inject(GridEventService);
   row: number = 0;
   column: number = 0;

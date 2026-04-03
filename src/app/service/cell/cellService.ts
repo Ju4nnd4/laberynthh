@@ -1,18 +1,15 @@
-import { StorizedData } from "../dataStore";
+import { DataStore } from "../dataStore";
 import { CellStateService } from "./cellStateService";
 import { inject, Injectable } from "@angular/core";
 import { cellRegisterService } from "./cellRegisterService";
-
 
 @Injectable({ providedIn: "root"})
 export class cellService{
     
     id!: string;
-    data = inject(StorizedData);
+    data = inject(DataStore);
     cellState = inject(CellStateService);
     instance = inject(cellRegisterService);
-
-
 
     handleCellStatesByClickOnCell(cellId: string){
         const cell = this.instance.get(cellId);

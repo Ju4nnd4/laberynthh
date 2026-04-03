@@ -1,5 +1,5 @@
 import { inject, Injectable} from "@angular/core";
-import { StorizedData } from "../../dataStore";
+import { DataStore } from "../../dataStore";
 import { GridExpansionLimitationService } from "../../grid/gridExpansionLimitationService";
 import { cellRegisterService } from "../../cell/cellRegisterService";
 
@@ -7,9 +7,9 @@ import { cellRegisterService } from "../../cell/cellRegisterService";
   providedIn: 'root'
 })
 
-export class ExpansionService{
+export class BFSSearch{
   
-  data = inject(StorizedData);
+  data = inject(DataStore);
   rService = inject(GridExpansionLimitationService);
   visited = new Set<number>();
   registerInstance = inject(cellRegisterService);
@@ -23,9 +23,7 @@ export class ExpansionService{
   goalCell!: number;
   parentMap: Record<number, number> = {};
 
-  controller = new AbortController();
-  //goalCellNumber: number = parseInt(this.goalCellId.replace("cell-", ""), 10);
-  setVariablesForDjisktra(starterCell: number): void{
+  setVariables(starterCell: number): void{
     
     this.starterCell = starterCell;
     this.cellAbove = this.starterCell - this.data.getColumnsQnty();
@@ -102,7 +100,7 @@ export class ExpansionService{
 
       this.visited.add(targetCell);
       await this.sleep(400);
-      this.setVariablesForDjisktra(targetCell);
+      this.setVariables(targetCell);
 
       const isCellAboveAvailable = this.rService.isPossibleToGoAbove(this.cellAbove) && !this.isAlreadyVisited(this.cellAbove) && !this.isStart(this.cellAbove) && !this.isBlock(this.cellAbove);
       const isCellBelowAvailable = this.rService.isPossibleToGoDown(this.cellBelow) && !this.isAlreadyVisited(this.cellBelow) && !this.isStart(this.cellBelow) && !this.isBlock(this.cellBelow);
