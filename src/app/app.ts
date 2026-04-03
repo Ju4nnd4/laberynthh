@@ -16,9 +16,9 @@ export class App implements AfterViewInit {
 
 
   ngAfterViewInit() {
+
+  
+  
   }
-  
-  
-  
   
 }

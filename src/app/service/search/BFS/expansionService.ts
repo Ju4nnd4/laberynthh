@@ -1,8 +1,6 @@
-import { inject, Injectable, Renderer2, Inject } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { inject, Injectable} from "@angular/core";
 import { StorizedData } from "../../dataStore";
 import { GridExpansionLimitationService } from "../../grid/gridExpansionLimitationService";
-import { StarterPointButton } from "../../../component/grid-panel/starter-point-button/starter-point-button";
 import { cellRegisterService } from "../../cell/cellRegisterService";
 
 @Injectable({

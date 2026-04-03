@@ -1,18 +1,32 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-
-@Injectable({
-  providedIn: 'root'
-})
-
-export class CellService {
-  isStarterPointMarked = new BehaviorSubject<boolean>(false);
-  isGoalPointMarked = new BehaviorSubject<boolean>(false);
-  isBlockButtonMarked = new BehaviorSubject<boolean>(false);
-  starterPointCellId = new BehaviorSubject<string|null>(null);
-  goalPointCellId = new BehaviorSubject<string|null>(null);
-  isNeighbor = new BehaviorSubject<boolean>(false);
-  
+import { StorizedData } from "../dataStore";
+import { CellStateService } from "./cellStateService";
+import { inject, Injectable } from "@angular/core";
+import { cellRegisterService } from "./cellRegisterService";
 
 
+@Injectable({ providedIn: "root"})
+export class cellService{
+    
+    id!: string;
+    data = inject(StorizedData);
+    cellState = inject(CellStateService);
+    instance = inject(cellRegisterService);
+
+
+
+    handleCellStatesByClickOnCell(cellId: string){
+        const cell = this.instance.get(cellId);
+        if(this.cellState.isBlockButtonMarked.getValue()) cell!.toBlock();
+
+        else if(this.cellState.isGoalPointMarked.getValue()) {
+            this.cellState.goalCellOnChangeSubscription.next(cellId);
+            this.data.setGoalCell(cellId);
+        }
+
+        else if(this.cellState.isStarterPointMarked.getValue()) {
+            this.cellState.starterCellOnChangeSubscription.next(cellId);
+            this.data.setStarterCell(cellId);
+        }
+
+    }
 }

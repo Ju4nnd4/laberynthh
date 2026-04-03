@@ -1,7 +1,8 @@
 import { Component, Input, OnDestroy, OnInit, inject} from '@angular/core';
-import { CellService } from '../../../service/cell/cellService';
-import { StorizedData } from '../../../service/dataStore';
+import { CellStateService } from '../../../service/cell/cellStateService';
+import { cellService } from '../../../service/cell/cellService';
 import { cellRegisterService } from '../../../service/cell/cellRegisterService';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-cell',
@@ -10,99 +11,44 @@ import { cellRegisterService } from '../../../service/cell/cellRegisterService';
   styleUrl: './cell.scss',
 })
 export class Cell implements OnInit, OnDestroy {
-  @Input() isActive: boolean = false;
   @Input() id: string = '';
-  buttonText: string = this.id.toString();
   isStart: boolean = false;
   isGoal: boolean = false;
   isNeighbor: boolean = false;
   isPath: boolean = false;
   isBlock: boolean = false;
-  data = inject(StorizedData);
-
-  constructor(private cService: CellService, private registerInstance: cellRegisterService){
-
-    this.cService.starterPointCellId.subscribe(id => {
-      this.isStart = id == this.id
-    })
-
-    this.cService.goalPointCellId.subscribe(id => {
-      this.isGoal = id == this.id
-    })
-
-  }
-
+  
+  constructor(
+    private cellState: CellStateService, 
+    private registerInstance: cellRegisterService, 
+    private service: cellService,
+    private detectChanges: ChangeDetectorRef ){}
+  
   ngOnInit() {
     this.registerInstance.register(this.id, this);
+    
+    this.cellState.starterCellOnChangeSubscription.subscribe(id => {
+      this.isStart = id == this.id
+    })
+    this.cellState.goalCellOnChangeSubscription.subscribe(id => {
+      this.isGoal = id == this.id
+    })
+    
   }
 
-  ngOnDestroy() {
-    this.registerInstance.delete(this.id);  // organizar este menjurje
-  }
+  ngOnDestroy() { this.registerInstance.delete(this.id);  }
 
+  toggleCell(){ this.service.handleCellStatesByClickOnCell(this.id) ;}
 
-  toggleCell(){
-    this.setStarterPointOnACell();
-    this.setGoalPointOnACell();
-    this.setBlockPointOnACell();
-  }
-
-  toNeighbor(){
-    this.isNeighbor = !this.isNeighbor;
-    const cell = document.getElementById(this.id)
-    if(this.isNeighbor){
-      cell!.classList.add("walked");
-    } else {
-      cell!.classList.remove("walked");
-    }
-  }
+  toNeighbor(){ this.isNeighbor = !this.isNeighbor; this.detectChanges.detectChanges();}
   
-  toBlock(){
-    this.isBlock = !this.isBlock;
-    const cell = document.getElementById(this.id)
-    if(this.isBlock){
-      cell!.classList.add("obstacle");
-    } else {
-      cell!.classList.remove("obstacle");
-    }
-  }
+  toBlock(){ this.isBlock = !this.isBlock; this.detectChanges.detectChanges();}
 
-  toPath(){
-    this.isPath = true;
-    const cell = document.getElementById(this.id)
-    cell!.classList.add("tracePath");
-  }
+  toPath(){ this.isPath = !this.isPath; this.detectChanges.detectChanges(); }
 
-  setBlockPointOnACell(){
-    if(this.cService.isBlockButtonMarked.getValue()){
-      this.toBlock();
-    }
-  }
+  toStart(){ this.detectChanges.detectChanges(); }
 
-  setStarterPointOnACell(){
-
-    this.cService.starterPointCellId.subscribe();
-    
-    if (this.cService.isStarterPointMarked.getValue()) {
-
-    this.cService.starterPointCellId.next(this.id);
-    this.data.setStarterCell(this.id);
-    this.isStart = true;
-    }
-  }
-
-  setGoalPointOnACell(){
-
-    this.cService.goalPointCellId.subscribe();
-    
-    if (this.cService.isGoalPointMarked.getValue()) {
-    // Desactiva la celda anterior
-    this.cService.goalPointCellId.next(this.id);
-    this.data.setGoalCell(this.id)
-    this.isGoal = true;
-    }
-  }
-
+  toGoal(){ this.detectChanges.detectChanges(); }
 
 }
 

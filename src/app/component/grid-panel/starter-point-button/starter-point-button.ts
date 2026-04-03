@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CellService } from '../../../service/cell/cellService';
+import { CellStateService } from '../../../service/cell/cellStateService';
 import { Subscription } from 'rxjs';
 import { OnDestroy } from '@angular/core';
 
@@ -11,7 +11,7 @@ import { OnDestroy } from '@angular/core';
 })
 export class StarterPointButton{
 
-  constructor(private cService: CellService){}
+  constructor(private store: CellStateService){}
 
   isSubscribed = false;
   sub!: Subscription;
@@ -20,11 +20,11 @@ export class StarterPointButton{
     if(this.isSubscribed){
       this.sub.unsubscribe();
       this.isSubscribed = false;      
-      this.cService.isStarterPointMarked.next(false);
+      this.store.isStarterPointMarked.next(false);
 
     }
     else{
-      this.sub = this.cService.isStarterPointMarked.subscribe(
+      this.sub = this.store.isStarterPointMarked.subscribe(
         (marked: boolean) => {
           if (marked){
             console.log("hola");
@@ -32,7 +32,7 @@ export class StarterPointButton{
         }
       );
       this.isSubscribed = true;
-      this.cService.isStarterPointMarked.next(true);
+      this.store.isStarterPointMarked.next(true);
         }
     }
   }

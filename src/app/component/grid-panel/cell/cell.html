@@ -1,7 +1,9 @@
 <button class="cell"
-  [class.active]="isActive" 
   [class.starterCell]="isStart"
   [class.goalCell]="isGoal"
+  [class.walked]="isNeighbor"
+  [class.obstacle]="isBlock"
+  [class.tracePath]="isPath"
   id="{{id}}"
   (click)="toggleCell()">
   {{ id }}

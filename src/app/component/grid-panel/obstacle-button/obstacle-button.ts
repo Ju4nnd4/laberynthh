@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
-import { ExpansionService } from '../../../service/search/BFS/expansionService';
-import { inject } from '@angular/core';
-import { StorizedData } from '../../../service/dataStore';
 import { Subscription } from 'rxjs';
-import { CellService } from '../../../service/cell/cellService';
+import { CellStateService } from '../../../service/cell/cellStateService';
 
 @Component({
   selector: 'app-obstacle-button',
@@ -13,7 +10,7 @@ import { CellService } from '../../../service/cell/cellService';
 })
 export class ObstacleButton {
 
-  constructor(private cService: CellService){}
+  constructor(private store: CellStateService){}
     
   isSubscribed = false;
   sub!: Subscription;
@@ -22,11 +19,11 @@ export class ObstacleButton {
     if(this.isSubscribed){
       this.sub.unsubscribe();
       this.isSubscribed = false;      
-      this.cService.isBlockButtonMarked.next(false);
+      this.store.isBlockButtonMarked.next(false);
 
     }
     else{
-      this.sub = this.cService.isBlockButtonMarked.subscribe(
+      this.sub = this.store.isBlockButtonMarked.subscribe(
         (marked: boolean) => {
           if (marked){
             console.log("Block button marked");
@@ -34,7 +31,7 @@ export class ObstacleButton {
         }
       );
       this.isSubscribed = true;
-      this.cService.isBlockButtonMarked.next(true);
+      this.store.isBlockButtonMarked.next(true);
         }
     }
 

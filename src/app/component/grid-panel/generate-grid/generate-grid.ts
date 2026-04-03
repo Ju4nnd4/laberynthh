@@ -2,6 +2,7 @@ import { Component, HostBinding, inject, effect} from '@angular/core';
 import { Cell } from '../cell/cell';
 import { StorizedData } from '../../../service/dataStore';
 import { GridEventService } from '../../../service/grid/gridEventService';
+import { CellModel } from '../../../model/cellModel';
 
 
 @Component({
@@ -18,7 +19,6 @@ export class GenerateGrid{
 
   constructor() {
     effect(() => {
-      // Se ejecuta automáticamente cada vez que showGrid cambia
       if (this.gridEvent.showGrid()) {
         this.generateGrid();
       }
@@ -29,7 +29,7 @@ export class GenerateGrid{
     return this.data.getColumnsQnty();
   }
   
-  cells: {id: string, isActive: boolean}[] = [];
+  cells: CellModel[] = [];
   
   generateGrid() {
     this.row = this.data.getRowsQnty();
@@ -38,8 +38,10 @@ export class GenerateGrid{
     const total = this.row * this.column;
     this.cells = Array.from({ length: total }, (_, i) => ({
       id: `cell-${i+1}`,
-      isActive: false,
-      starterPoint: false
+      isStart: false,
+      isGoal: false,
+      isBlock: false,
+      isPath: false
 
     }));
      

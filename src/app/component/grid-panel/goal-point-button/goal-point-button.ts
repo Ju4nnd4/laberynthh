@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CellService } from '../../../service/cell/cellService';
+import { CellStateService } from '../../../service/cell/cellStateService';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
   styleUrl: './goal-point-button.scss',
 })
 export class GoalPointButton {
-    constructor(private cService: CellService){}
+    constructor(private store: CellStateService){}
   
     isSubscribed = false;
     sub!: Subscription;
@@ -18,11 +18,11 @@ export class GoalPointButton {
       if(this.isSubscribed){
         this.sub.unsubscribe();
         this.isSubscribed = false;      
-        this.cService.isGoalPointMarked.next(false);
+        this.store.isGoalPointMarked.next(false);
   
       }
       else{
-        this.sub = this.cService.isGoalPointMarked.subscribe(
+        this.sub = this.store.isGoalPointMarked.subscribe(
           (marked: boolean) => {
             if (marked){
               console.log("hola");
@@ -30,7 +30,7 @@ export class GoalPointButton {
           }
         );
         this.isSubscribed = true;
-        this.cService.isGoalPointMarked.next(true);
+        this.store.isGoalPointMarked.next(true);
           }
       }
 }
