@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Cell } from "../../component/grid-panel/cell/cell";
+import { Utils } from "../utils";
 
 @Injectable({
     providedIn: 'root'
@@ -7,13 +8,12 @@ import { Cell } from "../../component/grid-panel/cell/cell";
 
 export class cellRegisterService{
     private instance = new Map<string, Cell>();
+    utils = new Utils();
 
     register(id: string, instance: Cell){
         this.instance.set(id, instance);
         console.log("Id registrado:" + id);
     }
-
-    
 
     get(id: string): Cell | undefined {
         return this.instance.get(id);
@@ -21,6 +21,10 @@ export class cellRegisterService{
 
     delete(id: string){
         this.instance.delete(id);
+    }
+
+    cell(cellId: string){
+        return this.instance.get(cellId);
     }
 
 

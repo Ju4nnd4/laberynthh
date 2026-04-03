@@ -3,6 +3,7 @@ import { DataStore } from "../../dataStore";
 import { GridExpansionLimitationService } from "../../grid/gridExpansionLimitationService";
 import { cellRegisterService } from "../../cell/cellRegisterService";
 import { Utils } from "../../utils";
+import { PathTracer } from "./PathTracer";
 
 @Injectable({
   providedIn: 'root'
@@ -13,114 +14,102 @@ export class BfsMethod{
   data = inject(DataStore);
   gridBoundary = inject(GridExpansionLimitationService);
   instance = inject(cellRegisterService);
+  pathTracer = inject(PathTracer);
   utils = new Utils();
   asyncController = new AbortController();
 
-  starterCell!: number;
-  cellAbove!: number;
-  cellBelow!: number;
-  cellRight!: number;
-  cellLeft!: number;
-  parentMap: Record<number, number> = {};
+  starterCell!: string;
+  cellAbove!: string;
+  cellBelow!: string;
+  cellRight!: string;
+  cellLeft!: string;
+  goalCellId!: string;
 
-  setVariables(starterCell: number): void{
+  setVariables(starterCell: string): void{
     
+    const helper = this.utils.cellIdToCellNumber(starterCell);
     this.starterCell = starterCell;
-    this.cellAbove = this.starterCell - this.data.getColumnsQnty();
-    this.cellBelow = this.starterCell + this.data.getColumnsQnty();
-    this.cellRight = this.starterCell + 1;
-    this.cellLeft = this.starterCell - 1;
+    this.cellAbove = this.utils.cellNumberToCellId(helper - this.data.getColumnsQnty());
+    this.cellBelow = this.utils.cellNumberToCellId(helper + this.data.getColumnsQnty());
+    this.cellRight = this.utils.cellNumberToCellId(helper + 1);
+    this.cellLeft = this.utils.cellNumberToCellId(helper - 1);
     
   }
 
   search(starterCellId: string): void{
-    this.djisktraExpansion(this.utils.cellIdToCellNumber(starterCellId));
-  }
+    this.djisktraExpansion(starterCellId)
+        .then(() => {
+          if (this.goalCellId) this.pathTracer.reconstructPath(this.goalCellId);
+        }); 
+    }
   
-  isGoalCell(targetCellNumber: number): void {
-  const instance = this.instance.get(this.utils.cellNumberToCellId(targetCellNumber));
-  if (instance!.isGoal) {
-    this.asyncController.abort();
-    this.reconstructPath(targetCellNumber);
+  isGoalCell(targetCellId: string): void {
+    if (this.instance.cell(targetCellId)!.isGoal) {
+      this.asyncController.abort();
+      this.goalCellId = targetCellId;
     }
   }
 
-  expandCell(targetCellNumber: number): void {
+  expandCell(targetCellId: string): void {
     if (this.asyncController.signal.aborted) return; 
-    const instance = this.instance.get(this.utils.cellNumberToCellId(targetCellNumber));
-    this.isGoalCell(targetCellNumber);
-    instance!.toNeighbor();
+      this.isGoalCell(targetCellId);
+      this.instance.cell(targetCellId)!.toNeighbor();
   }
 
-  async reconstructPath(goalCellNumber: number) {
-    const path = [];
-    let currentCellNumber = goalCellNumber;
-    while (currentCellNumber !== undefined) {
-      await this.sleep(100);
-      let instance = this.instance.get(this.utils.cellNumberToCellId(currentCellNumber));
-      instance!.toTracePath();
-      path.unshift(currentCellNumber);
-      currentCellNumber = this.parentMap[currentCellNumber];
-    }
-    return path;
-  }
-
-  isAlreadyVisited(cellNumber: number): boolean{
-    return this.instance.get(this.utils.cellNumberToCellId(cellNumber))!.isNeighbor;
+  isAlreadyVisited(cellId: string): boolean{
+    return this.instance.cell(cellId)!.isNeighbor;
   }
   
-
-  isStart(cellNumber: number): boolean{
-    return this.instance.get(this.utils.cellNumberToCellId(cellNumber))!.isStart;
+  isStart(cellId: string): boolean{
+    return this.instance.cell(cellId)!.isStart;
   }
 
-  isBlock(cellNumber: number): boolean{
-    return this.instance.get(this.utils.cellNumberToCellId(cellNumber))!.isBlock;
+  isBlock(cellId: string): boolean{
+    return this.instance.cell(cellId)!.isBlock;
   }
 
-  async djisktraExpansion(targetCell: number){
+  async djisktraExpansion(targetCellId: string){
 
-      if (!targetCell || this.asyncController.signal.aborted) return;
+      if (!targetCellId || this.asyncController.signal.aborted) return;
 
-      await this.sleep(150);
-      this.setVariables(targetCell);
+      await this.utils.sleep(150);
+      this.setVariables(targetCellId);
 
-      const isCellAboveAvailable = this.gridBoundary.isPossibleToGoAbove(this.cellAbove) 
+      const isCellAboveAvailable = this.gridBoundary.isPossibleToGoAbove(this.utils.cellIdToCellNumber(this.cellAbove)) 
         && !this.isAlreadyVisited(this.cellAbove) 
         && !this.isStart(this.cellAbove) 
         && !this.isBlock(this.cellAbove);
-      const isCellBelowAvailable = this.gridBoundary.isPossibleToGoDown(this.cellBelow) 
+      const isCellBelowAvailable = this.gridBoundary.isPossibleToGoDown(this.utils.cellIdToCellNumber(this.cellBelow)) 
         && !this.isAlreadyVisited(this.cellBelow) 
         && !this.isStart(this.cellBelow) 
         && !this.isBlock(this.cellBelow);
-      const isCellRightAvailable = this.gridBoundary.isPossibleToGoRight(targetCell) 
+      const isCellRightAvailable = this.gridBoundary.isPossibleToGoRight(this.utils.cellIdToCellNumber(targetCellId)) 
         && !this.isAlreadyVisited(this.cellRight) 
         && !this.isStart(this.cellRight) 
         && !this.isBlock(this.cellRight);
-      const isCellLeftAvailable  = this.gridBoundary.isPossibleToGoLeft(this.cellLeft) 
+      const isCellLeftAvailable  = this.gridBoundary.isPossibleToGoLeft(this.utils.cellIdToCellNumber(this.cellLeft)) 
         && !this.isAlreadyVisited(this.cellLeft) 
         && !this.isStart(this.cellLeft) 
         && !this.isBlock(this.cellLeft);
         
-      if (isCellAboveAvailable){
-        
-        this.parentMap[this.cellAbove] = targetCell
+      if (isCellAboveAvailable){      
+        this.pathTracer.add(this.cellAbove, targetCellId)
         this.expandCell(this.cellAbove);
       } 
         
       if (isCellBelowAvailable){
-        this.parentMap[this.cellBelow] = targetCell
+        this.pathTracer.add(this.cellBelow, targetCellId)
         this.expandCell(this.cellBelow);
       }
       if (isCellRightAvailable) {
-        this.parentMap[this.cellRight] = targetCell
+        this.pathTracer.add(this.cellRight, targetCellId)
         this.expandCell(this.cellRight);
       }
       if (isCellLeftAvailable){
-        this.parentMap[this.cellLeft] = targetCell
+        this.pathTracer.add(this.cellLeft, targetCellId)
         this.expandCell(this.cellLeft);
       }
-        
+  
       if (this.asyncController.signal.aborted) return;
         
       await Promise.all([
@@ -131,9 +120,5 @@ export class BfsMethod{
       ]);
       
     }
-  
-  sleep(ms: number){
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
   
 }
