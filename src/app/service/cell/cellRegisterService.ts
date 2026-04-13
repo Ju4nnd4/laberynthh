@@ -23,8 +23,16 @@ export class cellRegisterService{
         this.instance.delete(id);
     }
 
-    cell(cellId: string){
-        return this.instance.get(cellId);
+    cell(id: string){
+        return this.instance.get(id);
+    }
+
+    exist(id: string):  boolean{
+        if(this.instance.get(id) == undefined){
+            return false;
+        } else{
+            return true;
+        }
     }
 
 

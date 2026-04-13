@@ -4,6 +4,7 @@ import { GridExpansionLimitationService } from "../../grid/gridExpansionLimitati
 import { cellRegisterService } from "../../cell/cellRegisterService";
 import { Utils } from "../../utils";
 import { PathTracer } from "./PathTracer";
+import { Neighbor } from "../../../model/neighborModel";
 
 @Injectable({
   providedIn: 'root'
@@ -18,27 +19,26 @@ export class BfsMethod{
   utils = new Utils();
   asyncController = new AbortController();
 
-  starterCell!: string;
-  cellAbove!: string;
-  cellBelow!: string;
-  cellRight!: string;
-  cellLeft!: string;
   goalCellId!: string;
 
-  setVariables(starterCell: string): void{
+  calculateNeighbors(starterCell: string): Neighbor {
     
     const helper = this.utils.cellIdToCellNumber(starterCell);
-    this.starterCell = starterCell;
-    this.cellAbove = this.utils.cellNumberToCellId(helper - this.data.getColumnsQnty());
-    this.cellBelow = this.utils.cellNumberToCellId(helper + this.data.getColumnsQnty());
-    this.cellRight = this.utils.cellNumberToCellId(helper + 1);
-    this.cellLeft = this.utils.cellNumberToCellId(helper - 1);
-    
+
+    return  {
+      starterCell: starterCell,
+      above: this.utils.cellNumberToCellId(helper - this.data.getColumnsQnty()),
+      below: this.utils.cellNumberToCellId(helper + this.data.getColumnsQnty()),
+      right: this.utils.cellNumberToCellId(helper + 1),
+      left: this.utils.cellNumberToCellId(helper - 1)
+    }
+
   }
 
-  search(starterCellId: string): void{
-    this.djisktraExpansion(starterCellId)
+  search(starterCellId: string): void {
+    this.exploreFrom(starterCellId)
         .then(() => {
+          console.log('goalCellId:', this.goalCellId); 
           if (this.goalCellId) this.pathTracer.reconstructPath(this.goalCellId);
         }); 
     }
@@ -56,69 +56,103 @@ export class BfsMethod{
       this.instance.cell(targetCellId)!.toNeighbor();
   }
 
-  isAlreadyVisited(cellId: string): boolean{
-    return this.instance.cell(cellId)!.isNeighbor;
+  isAlreadyVisited(cellId: string): boolean{ return this.instance.cell(cellId)!.isNeighbor; }
+
+  isStart(cellId: string): boolean { return this.instance.cell(cellId)!.isStart; }
+
+  isBlock(cellId: string): boolean { return this.instance.cell(cellId)!.isBlock; }
+  
+  isCellAboveAvailable(cellAbove: string): boolean{
+     if (!this.instance.exist(cellAbove)) return false; 
+    return this.gridBoundary.isPossibleToGoAbove(this.utils.cellIdToCellNumber(cellAbove)) 
+        && !this.isAlreadyVisited(cellAbove) 
+        && !this.isStart(cellAbove) 
+        && !this.isBlock(cellAbove);
   }
   
-  isStart(cellId: string): boolean{
-    return this.instance.cell(cellId)!.isStart;
+  isCellBelowAvailable(cellBelow: string): boolean{
+    if (!this.instance.exist(cellBelow)) return false; 
+    return this.gridBoundary.isPossibleToGoDown(this.utils.cellIdToCellNumber(cellBelow)) 
+        && !this.isAlreadyVisited(cellBelow) 
+        && !this.isStart(cellBelow) 
+        && !this.isBlock(cellBelow);
   }
 
-  isBlock(cellId: string): boolean{
-    return this.instance.cell(cellId)!.isBlock;
+  isCellRightAvailable(cellRight: string): boolean{
+    if (!this.instance.exist(cellRight)) return false; 
+    return this.gridBoundary.isPossibleToGoRight(this.utils.cellIdToCellNumber(cellRight)) 
+        && !this.isAlreadyVisited(cellRight) 
+        && !this.isStart(cellRight) 
+        && !this.isBlock(cellRight);
   }
 
-  async djisktraExpansion(targetCellId: string){
+  isCellLeftAvailable(cellLeft: string): boolean{
+    if (!this.instance.exist(cellLeft)) return false; 
+    return this.gridBoundary.isPossibleToGoLeft(this.utils.cellIdToCellNumber(cellLeft)) 
+        && !this.isAlreadyVisited(cellLeft) 
+        && !this.isStart(cellLeft) 
+        && !this.isBlock(cellLeft);
+  }
+
+
+
+  checkAvailableNeighbors(neighbor: Neighbor): Partial<Neighbor> {
+    
+    const available: Partial<Neighbor> = {};
+    available.starterCell = neighbor.starterCell;
+
+    if (this.isCellAboveAvailable(neighbor.above)) available.above = neighbor.above;
+    if (this.isCellBelowAvailable(neighbor.below)) available.below = neighbor.below;
+    if (this.isCellRightAvailable(neighbor.right)) available.right = neighbor.right;
+    if (this.isCellLeftAvailable(neighbor.left)) available.left  = neighbor.left;
+
+    return available;
+  }
+
+  async propagation(availableNeighbors: Partial<Neighbor>): Promise<void> {
+    if (this.asyncController.signal.aborted) return;
+
+    const { starterCell, ...neighbors } = availableNeighbors;
+    
+    await Promise.all(
+      Object.values(neighbors).map(cellId => this.exploreFrom(cellId))
+    );
+  }
+  
+  visitCell(childCell: string, parentCell: string): void{
+    this.pathTracer.add(childCell, parentCell)
+    this.expandCell(childCell);
+  }
+  
+  visitNeighbors(availableNeighbors: Partial<Neighbor>): void {
+    const { starterCell, ...neighbors } = availableNeighbors;
+    
+    for (const cellId of Object.values(neighbors).filter(Boolean)) {
+      this.visitCell(cellId, starterCell!);
+    }
+}
+
+
+  async exploreFrom(targetCellId: string): Promise<void>{
 
       if (!targetCellId || this.asyncController.signal.aborted) return;
-
       await this.utils.sleep(150);
-      this.setVariables(targetCellId);
-
-      const isCellAboveAvailable = this.gridBoundary.isPossibleToGoAbove(this.utils.cellIdToCellNumber(this.cellAbove)) 
-        && !this.isAlreadyVisited(this.cellAbove) 
-        && !this.isStart(this.cellAbove) 
-        && !this.isBlock(this.cellAbove);
-      const isCellBelowAvailable = this.gridBoundary.isPossibleToGoDown(this.utils.cellIdToCellNumber(this.cellBelow)) 
-        && !this.isAlreadyVisited(this.cellBelow) 
-        && !this.isStart(this.cellBelow) 
-        && !this.isBlock(this.cellBelow);
-      const isCellRightAvailable = this.gridBoundary.isPossibleToGoRight(this.utils.cellIdToCellNumber(targetCellId)) 
-        && !this.isAlreadyVisited(this.cellRight) 
-        && !this.isStart(this.cellRight) 
-        && !this.isBlock(this.cellRight);
-      const isCellLeftAvailable  = this.gridBoundary.isPossibleToGoLeft(this.utils.cellIdToCellNumber(this.cellLeft)) 
-        && !this.isAlreadyVisited(this.cellLeft) 
-        && !this.isStart(this.cellLeft) 
-        && !this.isBlock(this.cellLeft);
-        
-      if (isCellAboveAvailable){      
-        this.pathTracer.add(this.cellAbove, targetCellId)
-        this.expandCell(this.cellAbove);
-      } 
-        
-      if (isCellBelowAvailable){
-        this.pathTracer.add(this.cellBelow, targetCellId)
-        this.expandCell(this.cellBelow);
-      }
-      if (isCellRightAvailable) {
-        this.pathTracer.add(this.cellRight, targetCellId)
-        this.expandCell(this.cellRight);
-      }
-      if (isCellLeftAvailable){
-        this.pathTracer.add(this.cellLeft, targetCellId)
-        this.expandCell(this.cellLeft);
-      }
-  
+      const availableNeigbors = this.checkAvailableNeighbors(this.calculateNeighbors(targetCellId));
+      this.visitNeighbors(availableNeigbors)
       if (this.asyncController.signal.aborted) return;
-        
-      await Promise.all([
-        isCellAboveAvailable ? this.djisktraExpansion(this.cellAbove) : Promise.resolve(),
-        isCellBelowAvailable ? this.djisktraExpansion(this.cellBelow) : Promise.resolve(),
-        isCellRightAvailable ? this.djisktraExpansion(this.cellRight) : Promise.resolve(),
-        isCellLeftAvailable  ? this.djisktraExpansion(this.cellLeft)  : Promise.resolve(),
-      ]);
+      await this.propagation(availableNeigbors);  
       
     }
   
-}
+  }
+
+  /* 
+
+  CalculateNeigbors
+  CheckAvailability(CalculateNeighbors);
+  VisitNeighbors()
+  FindNeigbors -> Hace el calculo de cuales son los neighbors y devuelve un array
+  CheckAvailableNeighbors -> Busca en el array de neighbors cuales puede visitar y borra los que no
+  VisitNeighbors -> Visita los vecinos y empieza la expansion
+  
+  */

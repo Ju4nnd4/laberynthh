@@ -34,8 +34,8 @@ export class GridExpansionLimitationService{
         return true;
     }
     
-    isPossibleToGoRight(node: number): boolean{
-        if((node % this.data.getColumnsQnty()) + 1 == 1){
+    isPossibleToGoRight(node: number): boolean{ //Toco hacer un remache pa que funcione
+        if((node + 1 % this.data.getColumnsQnty()) + 1 == 1){
             return false;
         }
         return true;
