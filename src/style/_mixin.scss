@@ -1,0 +1,19 @@
+@use 'variable' as *;
+
+@mixin neomorphic-button {
+  all: unset;
+  background: $color-button;
+  border-radius: 50%;
+  box-shadow: 4px 4px 10px $shadow-dark, -2px -2px 5px $shadow-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: $color-text;
+  transition: transform 0.1s;
+  
+  &:active {
+    box-shadow: inset 2px 2px 5px $shadow-dark, inset -1px -1px 3px $shadow-light;
+    transform: scale(0.95);
+  }
+}

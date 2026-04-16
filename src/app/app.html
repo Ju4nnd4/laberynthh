@@ -7,8 +7,35 @@
 </head>
 <body>
   
+<section class="console-container">
+  <div class="top-bar">
+    <div class="indicator">
+      <div class="key">Y</div>
+      <span>BLOCK POINT</span>
+    </div>
+    <div class="indicator">
+      <div class="key">X</div>
+      <span>GOAL POINT</span>
+    </div>
+    <div class="indicator">
+      <div class="key">B</div>
+      <span>STARTER POINT</span>
+    </div>
+    <div class="indicator">
+      <div class="key">A</div>
+      <span>START</span>
+    </div>
+  </div>
+
+  <div class="main-chassis">
+    <app-left-controller></app-left-controller>
+    <app-screen></app-screen>
+    <app-right-controller></app-right-controller>
+  </div>
+
+</section>
+
 <app-input-panel></app-input-panel>
-<app-grid-panel></app-grid-panel>
 
 </body>
 </html>

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Cell } from "../../component/grid-panel/cell/cell";
+import { Cell } from "../../component/screen/cell/cell";
 import { Utils } from "../utils";
 
 @Injectable({
