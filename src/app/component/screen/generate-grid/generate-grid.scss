@@ -1,0 +1,26 @@
+
+.gridLayer{
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.grid{
+    display: grid;
+    border: solid 1px;
+    width: 100%;
+    height: 100%;
+    border-color: rgb(28, 198, 97);
+    border-radius: 1rem;
+    gap: 0;
+    grid-template-columns: repeat(var(--columns), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+    
+}
+
+
+
+
+
+
+
+

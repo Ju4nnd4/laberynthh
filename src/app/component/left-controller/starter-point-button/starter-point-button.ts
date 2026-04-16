@@ -11,6 +11,7 @@ import { OnDestroy } from '@angular/core';
 })
 export class StarterPointButton{
 
+
   constructor(private store: CellStateService){}
 
   isSubscribed = false;

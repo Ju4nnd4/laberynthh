@@ -9,6 +9,7 @@ import { ChangeDetectorRef } from '@angular/core';
   imports: [],
   templateUrl: './cell.html',
   styleUrl: './cell.scss',
+  host: { style: 'display: block; width: 100%; height: 100%;' }
 })
 export class Cell implements OnInit, OnDestroy {
   @Input() id: string = '';

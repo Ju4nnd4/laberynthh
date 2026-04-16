@@ -1,8 +1,8 @@
 import { Component, HostBinding, inject, effect} from '@angular/core';
-import { Cell } from '../cell/cell';
 import { DataStore } from '../../../service/dataStore';
 import { GridEventService } from '../../../service/grid/gridEventService';
 import { CellModel } from '../../../model/cellModel';
+import { Cell } from '../cell/cell';
 
 
 @Component({
@@ -14,8 +14,8 @@ import { CellModel } from '../../../model/cellModel';
 export class GenerateGrid{
   data = inject(DataStore);
   gridEvent = inject(GridEventService);
-  row: number = 0;
-  column: number = 0;
+  row!: number;
+  column!: number;
 
   constructor() {
     effect(() => {

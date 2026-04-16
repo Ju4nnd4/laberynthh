@@ -1,8 +1,9 @@
 .cell{
-            width: 3rem;
-            height: 3rem;
-            background-color: rgb(0, 0, 0);
-            border: solid 0.5px rgb(88, 88, 88);
+            height: 100%;
+            width: 100%;
+            background-color: transparent;
+            border: solid 0.5px rgb(28, 192, 97);
+            border-radius: 1rem;
             display: flex;
             justify-content: center;
             align-items: center;
