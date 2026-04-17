@@ -20,8 +20,10 @@ export class GenerateGridButton {
   screenChanger = inject(ScreenChanger);
 
   onGenerate() {
+    this.gridEvent.resetGrid();
     this.data.setColumnsQnty(this.column);
     this.data.setRowsQnty(this.row);
+    this.gridEvent.generateGrid();
     this.screenChanger.changeScreen('gridScreen');
     }
 }

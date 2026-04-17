@@ -28,14 +28,14 @@ export class GridExpansionLimitationService{
     }
 
     isPossibleToGoLeft(node: number): boolean{
-        if((node % this.data.getColumnsQnty()) - 1 == -1){
+        if((node % this.data.getColumnsQnty()) === 0){
             return false;
         }
         return true;
     }
     
     isPossibleToGoRight(node: number): boolean{ //Toco hacer un remache pa que funcione
-        if((node + 1 % this.data.getColumnsQnty()) + 1 == 1){
+        if(((node - 1) % this.data.getColumnsQnty()) === 0){
             return false;
         }
         return true;

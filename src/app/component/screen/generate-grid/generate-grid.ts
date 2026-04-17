@@ -20,11 +20,11 @@ export class GenerateGrid{
   constructor() {
     effect(() => {
       if (this.gridEvent.showGrid()) {
-        this.generateGrid();
+        this.gridEvent.generateGrid();
       }
     });
 
-    this.generateGrid()
+    this.gridEvent.generateGrid()
   }
   
   @HostBinding('style.--columns') get columns() {
@@ -32,22 +32,7 @@ export class GenerateGrid{
   }
   
   
-  generateGrid() {
-    this.data.resetBunchOfCells();
-    this.row = this.data.getRowsQnty();
-    this.column = this.data.getColumnsQnty();
-    
-    const total = this.row * this.column;
-    this.data.bunchOfCells = Array.from({ length: total }, (_, i) => ({
-      id: `cell-${i+1}`,
-      isStart: false,
-      isGoal: false,
-      isBlock: false,
-      isPath: false
-
-    }));
-     
-  }
+  
 
 
 }
