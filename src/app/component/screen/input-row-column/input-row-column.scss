@@ -1,8 +1,11 @@
+@use 'index' as *;
+
+
 .rows-columns-input-section{
     width: fit-content;
     height: 30rem;
-    
-
+    color: rgba(66,201,32,1);
+    font-family: $font-bytesized;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -14,7 +17,7 @@
 .title-and-definition-box{
     width: 100%;
     h1{
-        //background-color: red;
+        background-color: red;
         margin: 0;
     }
 

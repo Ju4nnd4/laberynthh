@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InputPanel } from './input-panel';
+import { GridButton } from './grid-button';
 
-describe('InputPanel', () => {
-  let component: InputPanel;
-  let fixture: ComponentFixture<InputPanel>;
+describe('GridButton', () => {
+  let component: GridButton;
+  let fixture: ComponentFixture<GridButton>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InputPanel],
+      imports: [GridButton],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InputPanel);
+    fixture = TestBed.createComponent(GridButton);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

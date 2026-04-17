@@ -12,7 +12,6 @@ export class cellRegisterService{
 
     register(id: string, instance: Cell){
         this.instance.set(id, instance);
-        console.log("Id registrado:" + id);
     }
 
     get(id: string): Cell | undefined {

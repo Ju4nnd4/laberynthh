@@ -1,15 +1,21 @@
 import { Injectable } from "@angular/core";
-
+import { CellModel } from "../model/cellModel";
 @Injectable({
   providedIn: 'root'
 })
 
 export class DataStore{
 
-    columnsQnty!: number;
-    rowsQnty!: number;
+    columnsQnty: number = 10;
+    rowsQnty: number = 10;
     starterCellId!: string;
     goalCellId!: string;
+
+    bunchOfCells: CellModel[] = [];
+
+    resetBunchOfCells(): void{
+        this.bunchOfCells = [];
+    }
 
     setColumnsQnty(columnsQuantityByInput: number): void{
         this.columnsQnty = columnsQuantityByInput;

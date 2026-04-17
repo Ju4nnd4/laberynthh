@@ -1,5 +1,9 @@
 <section class="screen-area">
     <div class="inner-screen">
-        <app-generate-grid></app-generate-grid>
+        <div class="content">
+            <app-input-row-column class="hidden" [class.active]="screenChanger.inputRowColumnScreen()"></app-input-row-column>
+            <app-generate-grid class="hidden" [class.active]="screenChanger.gridScreen()"></app-generate-grid>
+        </div>
+        
     </div>
 </section>

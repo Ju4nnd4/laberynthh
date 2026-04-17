@@ -14,8 +14,8 @@ import { Cell } from '../cell/cell';
 export class GenerateGrid{
   data = inject(DataStore);
   gridEvent = inject(GridEventService);
-  row!: number;
-  column!: number;
+  row: number = 10;
+  column: number = 10;
 
   constructor() {
     effect(() => {
@@ -23,20 +23,22 @@ export class GenerateGrid{
         this.generateGrid();
       }
     });
+
+    this.generateGrid()
   }
   
   @HostBinding('style.--columns') get columns() {
     return this.data.getColumnsQnty();
   }
   
-  cells: CellModel[] = [];
   
   generateGrid() {
+    this.data.resetBunchOfCells();
     this.row = this.data.getRowsQnty();
     this.column = this.data.getColumnsQnty();
     
     const total = this.row * this.column;
-    this.cells = Array.from({ length: total }, (_, i) => ({
+    this.data.bunchOfCells = Array.from({ length: total }, (_, i) => ({
       id: `cell-${i+1}`,
       isStart: false,
       isGoal: false,

@@ -1,6 +1,6 @@
 <section class="gridLayer">
   <div class="grid">
-    @for (cell of cells; track cell.id) {
+    @for (cell of data.bunchOfCells; track cell.id) {
       <app-cell [id]="cell.id" />
     }
   </div>
