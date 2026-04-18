@@ -12,9 +12,6 @@ export class GridButton {
   screenChanger = inject(ScreenChanger);
 
   onClick() {
-    console.log('clicked');
-    console.log('antes:', this.screenChanger.gridScreen());
     this.screenChanger.changeScreen('inputRowColumnScreen');
-    console.log('despues:', this.screenChanger.gridScreen());
   }
 }

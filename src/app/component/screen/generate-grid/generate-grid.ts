@@ -1,7 +1,6 @@
-import { Component, HostBinding, inject, effect} from '@angular/core';
+import { Component, HostBinding, inject} from '@angular/core';
 import { DataStore } from '../../../service/dataStore';
 import { GridEventService } from '../../../service/grid/gridEventService';
-import { CellModel } from '../../../model/cellModel';
 import { Cell } from '../cell/cell';
 
 
@@ -18,12 +17,6 @@ export class GenerateGrid{
   column: number = 10;
 
   constructor() {
-    effect(() => {
-      if (this.gridEvent.showGrid()) {
-        this.gridEvent.generateGrid();
-      }
-    });
-
     this.gridEvent.generateGrid()
   }
   

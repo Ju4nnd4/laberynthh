@@ -2,6 +2,7 @@ import { Component, inject, Input} from '@angular/core';
 import { DataStore } from '../../../../service/dataStore';
 import { GridEventService } from '../../../../service/grid/gridEventService';
 import { ScreenChanger } from '../../../../service/screen/screenChanger';
+import { ResetService } from '../../../../service/reset';
 
 @Component({
   selector: 'app-generate-grid-button',
@@ -18,9 +19,10 @@ export class GenerateGridButton {
   data = inject(DataStore);
   gridEvent = inject(GridEventService);
   screenChanger = inject(ScreenChanger);
+  reset = inject(ResetService);
 
   onGenerate() {
-    this.gridEvent.resetGrid();
+    this.reset.reset();
     this.data.setColumnsQnty(this.column);
     this.data.setRowsQnty(this.row);
     this.gridEvent.generateGrid();
