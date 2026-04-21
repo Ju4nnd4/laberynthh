@@ -54,4 +54,8 @@ export class DataStore{
         return !!this.goalCellId;
     }
 
+    resetGoalCell(): void{
+        this.goalCellId = '';
+    }
+
 }

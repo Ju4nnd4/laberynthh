@@ -24,9 +24,5 @@ export class GenerateGrid{
     return this.data.getColumnsQnty();
   }
   
-  
-  
-
-
 }
   

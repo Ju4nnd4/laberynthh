@@ -38,4 +38,8 @@ export class cellRegisterService{
         this.instance.clear();
     }
 
+    resetAllCells(): void {
+        this.instance.forEach(cell => cell.resetState());
+    }
+
 }

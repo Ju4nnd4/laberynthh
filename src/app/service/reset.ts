@@ -8,10 +8,14 @@ import { PathTracer } from './search/BFS/PathTracer';
 export class ResetService {
   data = inject(DataStore);
   cellState = inject(CellStateService);
-  register = inject(cellRegisterService);
+  instance = inject(cellRegisterService);
   pathTracer = inject(PathTracer);
 
   reset(): void {
+
+    // 1. Resetear estado visual de cada celda viva
+    this.instance.resetAllCells();
+
     // Limpiar DataStore
     this.data.starterCellId = null!;
     this.data.goalCellId = null!;
@@ -24,7 +28,6 @@ export class ResetService {
     this.cellState.goalCellOnChangeSubscription.next(null);
 
     // Limpiar registro de instancias
-    this.register.clear();
 
     // Limpiar PathTracer
     this.pathTracer.parentMap = {};

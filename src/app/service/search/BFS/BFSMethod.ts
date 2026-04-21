@@ -33,10 +33,14 @@ export class BfsMethod{
   }
 
   search(starterCellId: string): void {
+
+    this.data.resetGoalCell();       
+    this.pathTracer.parentMap = {}; 
+
     this.exploreFrom(starterCellId)
         .then(() => {
-          console.log('goalCellId:', this.data.getgoalCell); 
-          if (this.data.getgoalCell()) this.pathTracer.reconstructPath(this.data.getgoalCell());
+          console.log('goalCellId:', this.data.getgoalCell()); 
+          if (this.data.isGoalCellSet()) this.pathTracer.reconstructPath(this.data.getgoalCell());
         }); 
     }
   

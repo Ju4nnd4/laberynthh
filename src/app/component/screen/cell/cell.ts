@@ -49,5 +49,14 @@ export class Cell implements OnInit, OnDestroy {
 
   toTracePath(){ this.isPath = !this.isPath; this.detectChanges.detectChanges(); }
 
+  resetState(): void {
+    this.isStart = false;
+    this.isGoal = false;
+    this.isNeighbor = false;
+    this.isPath = false;
+    this.isBlock = false;
+    this.detectChanges.detectChanges();
+    }
+
 }
 
