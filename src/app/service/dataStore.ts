@@ -10,6 +10,7 @@ export class DataStore{
     rowsQnty: number = 10;
     starterCellId!: string;
     goalCellId!: string;
+    
 
     bunchOfCells: CellModel[] = [];
 
@@ -47,6 +48,10 @@ export class DataStore{
 
     getgoalCell(): string{
         return this.goalCellId;
+    }
+
+    isGoalCellSet(): boolean{
+        return !!this.goalCellId;
     }
 
 }

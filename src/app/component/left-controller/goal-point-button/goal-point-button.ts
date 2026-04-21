@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ButtonSwitchService } from '../../../service/button/buttonSwitchService';
 import { CellStateService } from '../../../service/cell/cellStateService';
 import { Subscription } from 'rxjs';
 
@@ -8,29 +9,24 @@ import { Subscription } from 'rxjs';
   templateUrl: './goal-point-button.html',
   styleUrl: './goal-point-button.scss',
 })
-export class GoalPointButton {
-    constructor(private store: CellStateService){}
-  
-    isSubscribed = false;
-    sub!: Subscription;
-  
-    onClick(){
-      if(this.isSubscribed){
-        this.sub.unsubscribe();
-        this.isSubscribed = false;      
-        this.store.isGoalPointMarked.next(false);
-  
-      }
-      else{
-        this.sub = this.store.isGoalPointMarked.subscribe(
-          (marked: boolean) => {
-            if (marked){
-              console.log("hola");
-            }
-          }
-        );
-        this.isSubscribed = true;
-        this.store.isGoalPointMarked.next(true);
-          }
-      }
+export class GoalPointButton implements OnInit, OnDestroy {
+
+  constructor(
+    private buttonSwitch: ButtonSwitchService,
+    private store: CellStateService
+  ) {}
+
+  isSubscribed = false;
+  private sub!: Subscription;
+
+  ngOnInit() {
+    this.sub = this.buttonSwitch.activeButton$.subscribe(active => {
+      this.isSubscribed = active === 'goal';
+      this.store.isGoalPointMarked.next(this.isSubscribed);
+    });
+  }
+
+  ngOnDestroy() { this.sub.unsubscribe(); }
+
+  onClick() { this.buttonSwitch.toggle('goal'); }
 }

@@ -29,6 +29,5 @@ export class ResetService {
     // Limpiar PathTracer
     this.pathTracer.parentMap = {};
 
-    // Resetear BFS
   }
 }

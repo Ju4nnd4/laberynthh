@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ButtonSwitchService } from '../../../service/button/buttonSwitchService';
 import { CellStateService } from '../../../service/cell/cellStateService';
 import { Subscription } from 'rxjs';
-import { OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-starter-point-button',
@@ -9,32 +9,24 @@ import { OnDestroy } from '@angular/core';
   templateUrl: './starter-point-button.html',
   styleUrl: './starter-point-button.scss',
 })
-export class StarterPointButton{
+export class StarterPointButton implements OnInit, OnDestroy {
 
-
-  constructor(private store: CellStateService){}
+  constructor(
+    private buttonSwitch: ButtonSwitchService,
+    private store: CellStateService
+  ) {}
 
   isSubscribed = false;
-  sub!: Subscription;
+  private sub!: Subscription;
 
-  onClick(){
-    if(this.isSubscribed){
-      this.sub.unsubscribe();
-      this.isSubscribed = false;      
-      this.store.isStarterPointMarked.next(false);
-
-    }
-    else{
-      this.sub = this.store.isStarterPointMarked.subscribe(
-        (marked: boolean) => {
-          if (marked){
-            console.log("hola");
-          }
-        }
-      );
-      this.isSubscribed = true;
-      this.store.isStarterPointMarked.next(true);
-        }
-    }
+  ngOnInit() {
+    this.sub = this.buttonSwitch.activeButton$.subscribe(active => {
+      this.isSubscribed = active === 'starter';
+      this.store.isStarterPointMarked.next(this.isSubscribed);
+    });
   }
 
+  ngOnDestroy() { this.sub.unsubscribe(); }
+
+  onClick() { this.buttonSwitch.toggle('starter'); }
+}

@@ -17,9 +17,6 @@ export class BfsMethod{
   instance = inject(cellRegisterService);
   pathTracer = inject(PathTracer);
   utils = new Utils();
-  asyncController = new AbortController();
-
-  goalCellId!: string;
 
   calculateNeighbors(starterCell: string): Neighbor {
     
@@ -38,20 +35,19 @@ export class BfsMethod{
   search(starterCellId: string): void {
     this.exploreFrom(starterCellId)
         .then(() => {
-          console.log('goalCellId:', this.goalCellId); 
-          if (this.goalCellId) this.pathTracer.reconstructPath(this.goalCellId);
+          console.log('goalCellId:', this.data.getgoalCell); 
+          if (this.data.getgoalCell()) this.pathTracer.reconstructPath(this.data.getgoalCell());
         }); 
     }
   
   isGoalCell(targetCellId: string): void {
     if (this.instance.cell(targetCellId)!.isGoal) {
-      this.asyncController.abort();
-      this.goalCellId = targetCellId;
+      this.data.setGoalCell(targetCellId);
     }
   }
 
   expandCell(targetCellId: string): void {
-    if (this.asyncController.signal.aborted) return; 
+    if (this.data.isGoalCellSet()) return; 
       this.isGoalCell(targetCellId);
       this.instance.cell(targetCellId)!.toNeighbor();
   }
@@ -110,7 +106,7 @@ export class BfsMethod{
   }
 
   async propagation(availableNeighbors: Partial<Neighbor>): Promise<void> {
-    if (this.asyncController.signal.aborted) return;
+    if (this.data.isGoalCellSet()) return;
 
     const { starterCell, ...neighbors } = availableNeighbors;
     
@@ -135,24 +131,13 @@ export class BfsMethod{
 
   async exploreFrom(targetCellId: string): Promise<void>{
 
-      if (!targetCellId || this.asyncController.signal.aborted) return;
+      if (!targetCellId || this.data.isGoalCellSet()) return;
       await this.utils.sleep(150);
       const availableNeigbors = this.checkAvailableNeighbors(this.calculateNeighbors(targetCellId));
       this.visitNeighbors(availableNeigbors)
-      if (this.asyncController.signal.aborted) return;
+      if (this.data.isGoalCellSet()) return;
       await this.propagation(availableNeigbors);  
       
     }
   
   }
-
-  /* 
-
-  CalculateNeigbors
-  CheckAvailability(CalculateNeighbors);
-  VisitNeighbors()
-  FindNeigbors -> Hace el calculo de cuales son los neighbors y devuelve un array
-  CheckAvailableNeighbors -> Busca en el array de neighbors cuales puede visitar y borra los que no
-  VisitNeighbors -> Visita los vecinos y empieza la expansion
-  
-  */
