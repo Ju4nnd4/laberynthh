@@ -12,7 +12,6 @@ export class CellStateService {
   starterCellOnChangeSubscription = new BehaviorSubject<string|null>(null);
   goalCellOnChangeSubscription = new BehaviorSubject<string|null>(null);
   isNeighbor = new BehaviorSubject<boolean>(false);
-  
-
+  isPainting = false;
 
 }

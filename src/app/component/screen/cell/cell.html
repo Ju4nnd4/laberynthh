@@ -5,7 +5,10 @@
   [class.obstacle]="isBlock"
   [class.tracePath]="isPath"
   id="{{id}}"
-  (click)="toggleCell()">
+  (click)="toggleCell()"
+  (mousedown)="onMouseDown()"
+  (mouseenter)="onMouseEnter()"
+  (mouseup)="onMouseUp()">
   
 </button>
 

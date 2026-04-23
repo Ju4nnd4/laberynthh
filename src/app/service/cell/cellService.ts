@@ -26,4 +26,11 @@ export class cellService{
         }
 
     }
+
+    handleCellPaintOnDrag(cellId: string){
+        const cell = this.instance.get(cellId);
+        if(this.cellState.isBlockButtonMarked.getValue() && !cell!.isBlock) {
+            cell!.toBlock();
+        }
+    }
 }

@@ -58,5 +58,22 @@ export class Cell implements OnInit, OnDestroy {
     this.detectChanges.detectChanges();
     }
 
+  onMouseDown() {
+  if (this.cellState.isBlockButtonMarked.getValue()) {
+    this.cellState.isPainting = true;
+    this.service.handleCellStatesByClickOnCell(this.id);
+  }
+  }
+
+  onMouseEnter() {
+    if (this.cellState.isBlockButtonMarked.getValue() && this.cellState.isPainting) {
+      this.service.handleCellPaintOnDrag(this.id);
+    }
+  }
+
+  onMouseUp() {
+    this.cellState.isPainting = false;
+  }
+
 }
 
