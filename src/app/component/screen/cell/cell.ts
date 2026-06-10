@@ -18,12 +18,14 @@ export class Cell implements OnInit, OnDestroy {
   isNeighbor: boolean = false;
   isPath: boolean = false;
   isBlock: boolean = false;
+
   
   constructor(
     private cellState: CellStateService, 
     private registerInstance: cellRegisterService, 
     private service: cellService,
     private detectChanges: ChangeDetectorRef ){}
+
   
   ngOnInit() {
     this.registerInstance.register(this.id, this);
@@ -58,22 +60,26 @@ export class Cell implements OnInit, OnDestroy {
     this.detectChanges.detectChanges();
     }
 
-  onMouseDown() {
-  if (this.cellState.isBlockButtonMarked.getValue()) {
-    this.cellState.isPainting = true;
-    this.service.handleCellStatesByClickOnCell(this.id);
-  }
-  }
+    onMouseDown() {
+      if (this.cellState.isBlockButtonMarked.getValue()) {
+        this.cellState.isPainting = true;
+        this.cellState.paintingIntent = this.isBlock ? 'unblock' : 'block'; // 👈 decides la intención
+        this.service.handleCellPaintWithIntent(this.id, this.cellState.paintingIntent);
 
-  onMouseEnter() {
-    if (this.cellState.isBlockButtonMarked.getValue() && this.cellState.isPainting) {
-      this.service.handleCellPaintOnDrag(this.id);
+      }
     }
-  }
 
-  onMouseUp() {
-    this.cellState.isPainting = false;
-  }
+    onMouseEnter() {
+      if (this.cellState.isBlockButtonMarked.getValue() && this.cellState.isPainting) {
+        this.service.handleCellPaintWithIntent(this.id, this.cellState.paintingIntent!);
+      }
+    }
+
+    onMouseUp() {
+      this.cellState.isPainting = false;
+      this.cellState.paintingIntent = null;
+    }
+
 
 }
 
