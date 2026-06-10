@@ -11,8 +11,9 @@ export class CellStateService {
   isBlockButtonMarked = new BehaviorSubject<boolean>(false);
   starterCellOnChangeSubscription = new BehaviorSubject<string|null>(null);
   goalCellOnChangeSubscription = new BehaviorSubject<string|null>(null);
+  
   isNeighbor = new BehaviorSubject<boolean>(false);
   isPainting = false;
-  paintingIntent: 'block' | 'unblock' | null = null; // 👈 nuevo
+  paintingIntent: 'block' | 'unblock' | null = null; 
 
 }

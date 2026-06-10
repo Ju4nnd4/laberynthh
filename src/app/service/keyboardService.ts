@@ -12,10 +12,10 @@ export class KeyboardShortcutService {
 
   private listener = (event: KeyboardEvent) => {
     switch (event.key) {
-      case '1': this.triggerFind(); break;
-      case '2': this.toggleStarter(); break;
-      case '3': this.toggleGoal(); break;
-      case '4': this.toggleBlock(); break;
+      case 'f': this.triggerFind(); break;
+      case 'q': this.toggleStarter(); break;
+      case 'w': this.toggleGoal(); break;
+      case 'e': this.toggleBlock(); break;
     }
   };
 

@@ -80,6 +80,5 @@ export class Cell implements OnInit, OnDestroy {
       this.cellState.paintingIntent = null;
     }
 
-
 }
 
